@@ -1,28 +1,23 @@
 package com.example.CSTS.Model;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(collection = "tickets")
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
+@Entity
 public class Ticket {
+
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
+
     private String title;
     private String description;
-    private String category;
-    private String status;
 
-    // Constructors
-    public Ticket() {}
+    // Getters and setters
 
-    public Ticket(String title, String description, String category, String status) {
-        this.title = title;
-        this.description = description;
-        this.category = category;
-        this.status = status;
-    }
-
-    // Getters and Setters
     public String getId() {
         return id;
     }
@@ -47,19 +42,6 @@ public class Ticket {
         this.description = description;
     }
 
-    public String getCategory() {
-        return category;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
+    public void setStatus(String open) {
     }
 }
