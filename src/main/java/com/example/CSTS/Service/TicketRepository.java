@@ -2,7 +2,9 @@ package com.example.CSTS.Service;
 
 
 import com.example.CSTS.Model.Ticket;
-import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface TicketRepository extends MongoRepository<Ticket, String> {
+
+public interface TicketRepository extends JpaRepository<Ticket, Long> {
+
 }
