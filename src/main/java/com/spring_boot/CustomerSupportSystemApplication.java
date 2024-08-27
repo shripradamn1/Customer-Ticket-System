@@ -1,14 +1,13 @@
-package com.example.CSTS;
+package com.spring_boot;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class CstsApplication {
+public class CustomerSupportSystemApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(CstsApplication.class, args);
-
+		SpringApplication.run(CustomerSupportSystemApplication.class, args);
 	}
 
 }
