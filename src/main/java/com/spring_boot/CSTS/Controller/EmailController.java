@@ -36,9 +36,9 @@ public class EmailController {
 
         try {
             emailService.sendSimpleMessage(to, subject, text);
-            return ResponseEntity.ok("Email sent successfully");
+            return ResponseEntity.ok("Email received successfully");
         } catch (Exception e) {
-            return ResponseEntity.status(500).body("Error sending email: " + e.getMessage());
+            return ResponseEntity.status(500).body("Error while receiving email: " + e.getMessage());
         }
     }
 }
