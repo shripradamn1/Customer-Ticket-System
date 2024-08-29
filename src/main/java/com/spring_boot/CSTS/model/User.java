@@ -12,7 +12,7 @@ public class User {
 
     private String name;
     private String email;
-    private String role; // Can be 'CUSTOMER', 'AGENT', 'ADMIN'
+    private String role;
 
     private LocalDateTime createdAt = LocalDateTime.now();
 

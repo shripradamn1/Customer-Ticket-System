@@ -29,11 +29,11 @@ public class TicketController {
         return ResponseEntity.ok(ticketService.getTicketById(id));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Ticket> updateTicket(@PathVariable Long id, @RequestBody Ticket ticket) {
-        ticket.setId(id);
-        return ResponseEntity.ok(ticketService.updateTicket(ticket));
-    }
+//    @PutMapping("/{id}")
+//    public ResponseEntity<Ticket> updateTicket(@PathVariable Long id, @RequestBody Ticket ticket) {
+//        ticket.setId(id);
+//        return ResponseEntity.ok(ticketService.updateTicket(ticket));
+//    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTicket(@PathVariable Long id) {

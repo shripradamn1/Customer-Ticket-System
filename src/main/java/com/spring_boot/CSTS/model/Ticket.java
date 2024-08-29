@@ -9,7 +9,6 @@ public class Ticket {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String title;
     private String description;
     private String category;
@@ -87,22 +86,16 @@ public class Ticket {
 	public void setAssignedTo(User assignedTo) {
 		this.assignedTo = assignedTo;
 	}
-
 	public LocalDateTime getCreatedAt() {
 		return createdAt;
 	}
-
 	public void setCreatedAt(LocalDateTime createdAt) {
 		this.createdAt = createdAt;
 	}
-
 	public LocalDateTime getUpdatedAt() {
 		return updatedAt;
 	}
-
 	public void setUpdatedAt(LocalDateTime updatedAt) {
 		this.updatedAt = updatedAt;
 	}
-
-    
 }

@@ -17,7 +17,6 @@ public class NotificationController {
     public ResponseEntity<Notification> createNotification(@RequestBody Notification notification) {
         return ResponseEntity.ok(notificationService.createNotification(notification));
     }
-
     @GetMapping
     public ResponseEntity<List<Notification>> getAllNotifications() {
         return ResponseEntity.ok(notificationService.getAllNotifications());
