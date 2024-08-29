@@ -22,6 +22,10 @@ public class AgentController {
     public ResponseEntity<Boolean> updateTickets(@PathVariable long id,@RequestParam String status){
      return ResponseEntity.ok(agentService.updateTicketStatus(id,status));
  }
+    @PutMapping("/{id}/priority")
+    public ResponseEntity<Boolean> setTicketPriority(@PathVariable long id, @RequestParam String priority) {
+        return ResponseEntity.ok(agentService.setTicketPriority(id, priority));
+    }
 
 
 }

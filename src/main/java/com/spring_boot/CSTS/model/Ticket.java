@@ -30,6 +30,11 @@ public class Ticket {
     public enum Status {
         OPEN, IN_PROGRESS, ASSIGNED, CLOSED, RESOLVED
     }
+	@Enumerated(EnumType.STRING)
+	private Priority priority;
+	public enum Priority {
+		LOW, MEDIUM, HIGH
+	}
 
 	public Long getId() {
 		return id;
@@ -97,5 +102,12 @@ public class Ticket {
 	}
 	public void setUpdatedAt(LocalDateTime updatedAt) {
 		this.updatedAt = updatedAt;
+	}
+	public Priority getPriority() {
+		return priority;
+	}
+
+	public void setPriority(Priority priority) {
+		this.priority = priority;
 	}
 }

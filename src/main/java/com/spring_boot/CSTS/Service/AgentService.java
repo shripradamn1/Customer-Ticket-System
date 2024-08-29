@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+
 @Service
 
 public class AgentService {
@@ -34,6 +36,22 @@ public class AgentService {
 
     public List<Ticket> getAllUserTickets(){
         return ticketRepository.findAll();
+    }
+
+    public Boolean setTicketPriority(Long ticketId,String priority){
+        Optional<Ticket> optionalTicket=ticketRepository.findById(ticketId);
+
+        if(optionalTicket.isPresent()) {
+            Ticket ticket = optionalTicket.get();
+            try {
+                ticket.setPriority(Ticket.Priority.valueOf(priority.toUpperCase()));
+                ticketRepository.save(ticket);
+                return true;
+            } catch (IllegalArgumentException e) {
+                return false;
+            }
+        }
+        return false;
     }
 
 }
