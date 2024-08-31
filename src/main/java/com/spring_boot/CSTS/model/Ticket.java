@@ -1,113 +1,118 @@
 package com.spring_boot.CSTS.model;
 
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "tickets")
 public class Ticket {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String title;
     private String description;
-    private String category;
-    
+
+    @Enumerated(EnumType.STRING)
+    private Priority priority;
+
     @Enumerated(EnumType.STRING)
     private Status status;
 
     @ManyToOne
-    @JoinColumn(name = "created_by")
-    private User createdBy;
+    @JoinColumn(name = "category_id")
+    private Category category;
 
     @ManyToOne
-    @JoinColumn(name = "assigned_to")
-    private User assignedTo;
+    @JoinColumn(name = "customer_id")
+    private User customer;
 
-    private LocalDateTime createdAt = LocalDateTime.now();
-    private LocalDateTime updatedAt = LocalDateTime.now();
+    @ManyToOne
+    @JoinColumn(name = "assigned_agent_id")
+    private SupportAgent assignedAgent;
+
+    @ManyToOne
+    @JoinColumn(name = "assigned_team_id")
+    private Team assignedTeam;
+
+    public enum Priority {
+        LOW, MEDIUM, HIGH, URGENT
+    }
 
     public enum Status {
-        OPEN, IN_PROGRESS, ASSIGNED, CLOSED, RESOLVED
+        OPEN, IN_PROGRESS, RESOLVED, CLOSED
     }
-	@Enumerated(EnumType.STRING)
-	private Priority priority;
-	public enum Priority {
-		LOW, MEDIUM, HIGH
-	}
 
-	public Long getId() {
-		return id;
-	}
+    // Getters and Setters
+    public Long getId() {
+        return id;
+    }
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public String getTitle() {
-		return title;
-	}
+    public String getTitle() {
+        return title;
+    }
 
-	public void setTitle(String title) {
-		this.title = title;
-	}
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
-	public String getDescription() {
-		return description;
-	}
+    public String getDescription() {
+        return description;
+    }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-	public String getCategory() {
-		return category;
-	}
+    public Priority getPriority() {
+        return priority;
+    }
 
-	public void setCategory(String category) {
-		this.category = category;
-	}
+    public void setPriority(Priority priority) {
+        this.priority = priority;
+    }
 
-	public Status getStatus() {
-		return status;
-	}
+    public Status getStatus() {
+        return status;
+    }
 
-	public void setStatus(Status status) {
-		this.status = status;
-	}
+    public void setStatus(Status status) {
+        this.status = status;
+    }
 
-	public User getCreatedBy() {
-		return createdBy;
-	}
+    public Category getCategory() {
+        return category;
+    }
 
-	public void setCreatedBy(User createdBy) {
-		this.createdBy = createdBy;
-	}
+    public void setCategory(Category category) {
+        this.category = category;
+    }
 
-	public User getAssignedTo() {
-		return assignedTo;
-	}
+    public User getCustomer() {
+        return customer;
+    }
 
-	public void setAssignedTo(User assignedTo) {
-		this.assignedTo = assignedTo;
-	}
-	public LocalDateTime getCreatedAt() {
-		return createdAt;
-	}
-	public void setCreatedAt(LocalDateTime createdAt) {
-		this.createdAt = createdAt;
-	}
-	public LocalDateTime getUpdatedAt() {
-		return updatedAt;
-	}
-	public void setUpdatedAt(LocalDateTime updatedAt) {
-		this.updatedAt = updatedAt;
-	}
-	public Priority getPriority() {
-		return priority;
-	}
+    public void setCustomer(User customer) {
+        this.customer = customer;
+    }
 
-	public void setPriority(Priority priority) {
-		this.priority = priority;
-	}
+    public SupportAgent getAssignedAgent() {
+        return assignedAgent;
+    }
+
+    public void setAssignedAgent(SupportAgent assignedAgent) {
+        this.assignedAgent = assignedAgent;
+    }
+
+    public Team getAssignedTeam() {
+        return assignedTeam;
+    }
+
+    public void setAssignedTeam(Team assignedTeam) {
+        this.assignedTeam = assignedTeam;
+    }
 }

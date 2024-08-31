@@ -4,44 +4,30 @@ import jakarta.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "support_agents")
-public class SupportAgent {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+@DiscriminatorValue("AGENT")
+public class SupportAgent extends User {
 
-    private String name;
-    private String email;
+    @ManyToOne
+    @JoinColumn(name = "team_id")
+    private Team team;
 
+    @OneToMany(mappedBy = "assignedAgent")
+    private List<Ticket> assignedTickets;
 
-
-    public Long getId() {
-        return id;
+    // Getters and Setters
+    public Team getTeam() {
+        return team;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setTeam(Team team) {
+        this.team = team;
     }
 
-    public String getName() {
-        return name;
+    public List<Ticket> getAssignedTickets() {
+        return assignedTickets;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-    public void viewAssignedTickets() {
-
-    }public void updateTicketStatus(Ticket ticket, Ticket.Status status) {
-
-        ticket.setStatus(status);
+    public void setAssignedTickets(List<Ticket> assignedTickets) {
+        this.assignedTickets = assignedTickets;
     }
 }

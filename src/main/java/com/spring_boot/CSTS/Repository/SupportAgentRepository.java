@@ -1,8 +1,9 @@
 package com.spring_boot.CSTS.Repository;
 
 import com.spring_boot.CSTS.model.SupportAgent;
-import com.spring_boot.CSTS.model.Ticket;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-public interface AgentRepository extends JpaRepository<SupportAgent, Long> {
+@Repository
+public interface SupportAgentRepository extends JpaRepository<SupportAgent, Long> {
 }

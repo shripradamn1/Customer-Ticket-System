@@ -1,7 +1,7 @@
 package com.spring_boot.CSTS.Controller;
 
-import com.spring_boot.CSTS.model.Ticket;
 import com.spring_boot.CSTS.Service.TicketService;
+import com.spring_boot.CSTS.model.Ticket;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,17 +11,13 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/tickets")
 public class TicketController {
+
     @Autowired
     private TicketService ticketService;
 
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<Ticket> createTicket(@RequestBody Ticket ticket) {
         return ResponseEntity.ok(ticketService.createTicket(ticket));
-    }
-
-    @GetMapping
-    public ResponseEntity<List<Ticket>> getAllTickets() {
-        return ResponseEntity.ok(ticketService.getAllTickets());
     }
 
     @GetMapping("/{id}")
@@ -29,15 +25,18 @@ public class TicketController {
         return ResponseEntity.ok(ticketService.getTicketById(id));
     }
 
-//    @PutMapping("/{id}")
-//    public ResponseEntity<Ticket> updateTicket(@PathVariable Long id, @RequestBody Ticket ticket) {
-//        ticket.setId(id);
-//        return ResponseEntity.ok(ticketService.updateTicket(ticket));
-//    }
+    @GetMapping("/all")
+    public ResponseEntity<List<Ticket>> getAllTickets() {
+        return ResponseEntity.ok(ticketService.getAllTickets());
+    }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTicket(@PathVariable Long id) {
-        ticketService.deleteTicket(id);
-        return ResponseEntity.ok().build();
+    @PutMapping("/update-status/{id}")
+    public ResponseEntity<String> updateTicketStatus(@PathVariable long id, @RequestParam String status) {
+        boolean updateSuccessful = ticketService.updateTicketStatus(id, status);
+        if (updateSuccessful) {
+            return ResponseEntity.ok("Ticket status updated successfully.");
+        } else {
+            return ResponseEntity.badRequest().body("Invalid status or ticket not found.");
+        }
     }
 }

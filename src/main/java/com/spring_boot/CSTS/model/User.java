@@ -1,7 +1,6 @@
 package com.spring_boot.CSTS.model;
 
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "users")
@@ -12,9 +11,11 @@ public class User {
 
     private String name;
     private String email;
-    private String role;
+    private String password;
 
-    private LocalDateTime createdAt = LocalDateTime.now();
+    @ManyToOne
+    @JoinColumn(name = "role_id", nullable = false)
+    private Role role;
 
 	public Long getId() {
 		return id;
@@ -40,21 +41,27 @@ public class User {
 		this.email = email;
 	}
 
-	public String getRole() {
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public Role getRole() {
 		return role;
 	}
 
-	public void setRole(String role) {
+	public void setRole(Role role) {
 		this.role = role;
 	}
 
-	public LocalDateTime getCreatedAt() {
-		return createdAt;
+	public User orElse(Object object) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
-	public void setCreatedAt(LocalDateTime createdAt) {
-		this.createdAt = createdAt;
-	}
-
+    // Getters and Setters
     
 }
