@@ -14,7 +14,6 @@ public class SupportAgent {
     private String email;
 
 
-
     public Long getId() {
         return id;
     }
@@ -38,10 +37,12 @@ public class SupportAgent {
     public void setEmail(String email) {
         this.email = email;
     }
+
     public void viewAssignedTickets() {
 
-    }public void updateTicketStatus(Ticket ticket, Ticket.Status status) {
-
-        ticket.setStatus(status);
+//    }public void updateTicketStatus(Ticket ticket, Ticket.Status status) {
+//
+//        ticket.setStatus(status);
+//    }
     }
 }

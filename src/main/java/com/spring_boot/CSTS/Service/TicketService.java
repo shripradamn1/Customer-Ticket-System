@@ -13,7 +13,7 @@ public class TicketService {
     private TicketRepository ticketRepository;
 
     public Ticket createTicket(Ticket ticket) {
-        ticket.setStatus(Ticket.Status.OPEN);
+       // ticket.setStatus(Ticket.Status.OPEN);
         return ticketRepository.save(ticket);
     }
 

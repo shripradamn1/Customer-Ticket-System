@@ -12,7 +12,7 @@ import java.util.List;
 public class AgentController {
 
   @Autowired
-    AgentService agentService;
+  AgentService agentService;
  @GetMapping("/all-tickets")
     public ResponseEntity<List<Ticket>> getTickets(){
      return ResponseEntity.ok(agentService.getAllUserTickets());

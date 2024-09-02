@@ -24,7 +24,7 @@ public class AgentService {
         return ticketRepository.findById(ticketId)
                 .map(ticket -> {
                     try {
-                        ticket.setStatus(Ticket.Status.valueOf(status.toUpperCase()));
+                     //   ticket.setStatus(Ticket.Status.valueOf(status.toUpperCase()));
                         ticketRepository.save(ticket);
                         return true;
                     } catch (IllegalArgumentException e) {
@@ -44,7 +44,7 @@ public class AgentService {
         if(optionalTicket.isPresent()) {
             Ticket ticket = optionalTicket.get();
             try {
-                ticket.setPriority(Ticket.Priority.valueOf(priority.toUpperCase()));
+             //   ticket.setPriority(Ticket.Priority.valueOf(priority.toUpperCase()));
                 ticketRepository.save(ticket);
                 return true;
             } catch (IllegalArgumentException e) {
