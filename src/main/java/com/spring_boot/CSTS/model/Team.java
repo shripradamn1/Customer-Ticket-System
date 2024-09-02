@@ -3,6 +3,9 @@ package com.spring_boot.CSTS.model;
 import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @Table(name = "teams")
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id") //bidirectional mapping
@@ -18,7 +21,15 @@ public class Team {
 //    @JsonManagedReference
     private Category category;
 
-    public Long getId() {
+    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, orphanRemoval = true)
+  //  @JsonIgnore // Prevents infinite recursion
+    private Set<Ticket> tickets = new HashSet<>();
+
+    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<SupportAgent> agents = new HashSet<>();
+
+    public Long getId()
+    {
         return id;
     }
 

@@ -11,8 +11,9 @@ public class SupportAgent {
     private Long id;
 
     private String name;
-    private String email;
-
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name="team_id")
+    Team team;
 
     public Long getId() {
         return id;
@@ -30,19 +31,11 @@ public class SupportAgent {
         this.name = name;
     }
 
-    public String getEmail() {
-        return email;
+    public Team getTeam() {
+        return team;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public void viewAssignedTickets() {
-
-//    }public void updateTicketStatus(Ticket ticket, Ticket.Status status) {
-//
-//        ticket.setStatus(status);
-//    }
+    public void setTeam(Team team) {
+        this.team = team;
     }
 }

@@ -1,10 +1,16 @@
 package com.spring_boot.CSTS.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerator;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
+
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "tickets")
+//@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Ticket {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -45,8 +51,6 @@ public class Ticket {
 		LOW, MEDIUM, HIGH
 	}
 
-	// Getters and Setters
-	// existing getters and setters...
 
 	public Category getCategory() {
 		return category;

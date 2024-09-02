@@ -8,7 +8,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "categories")
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id") //this is for biderectional mapping
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id") //this is for bidirectional mapping
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,11 +26,16 @@ public class Category {
 //    @JsonBackReference
     private Set<Team> teams = new HashSet<>();
 
+
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Ticket> tickets = new HashSet<>();
+
+
     @Transient
     @JsonIgnore
     private List<Long> teamIds;
 
-    // Getters and Setters
+
     public Long getId() {
         return id;
     }

@@ -3,6 +3,7 @@ package com.spring_boot.CSTS.Controller;
 import com.spring_boot.CSTS.model.Ticket;
 import com.spring_boot.CSTS.Service.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,8 +15,9 @@ public class TicketController {
     @Autowired
     private TicketService ticketService;
 
-    @PostMapping
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Ticket> createTicket(@RequestBody Ticket ticket) {
+        System.out.println(ticket.getTeam().getId());
         return ResponseEntity.ok(ticketService.createTicket(ticket));
     }
 
