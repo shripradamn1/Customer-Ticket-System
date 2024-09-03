@@ -52,4 +52,8 @@ public class Team {
     public void setCategory(Category category) {
         this.category = category;
     }
+
+    public Set<SupportAgent> getAgents() {
+        return agents;
+    }
 }

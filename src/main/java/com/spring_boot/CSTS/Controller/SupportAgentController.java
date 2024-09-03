@@ -3,10 +3,10 @@ package com.spring_boot.CSTS.Controller;
 import com.spring_boot.CSTS.Service.SupportAgentService;
 import com.spring_boot.CSTS.model.SupportAgent;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/agents")
@@ -24,6 +24,11 @@ public class SupportAgentController {
     @GetMapping
     public List<SupportAgent> getagents(){
         return agentService.getAgents();
+    }
+    @GetMapping("/{agentid}")
+    public Optional<SupportAgent> getAgent(@PathVariable Long agentid){
+        return agentService.getAgent(agentid);
+
     }
 
 

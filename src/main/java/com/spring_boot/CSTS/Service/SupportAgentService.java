@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class SupportAgentService {
@@ -26,5 +27,10 @@ public class SupportAgentService {
     }
     public List<SupportAgent> getAgents(){
         return agentRepository.findAll();
+    }
+
+
+    public Optional<SupportAgent> getAgent(Long id){
+        return agentRepository.findById(id);
     }
 }

@@ -1,8 +1,6 @@
 package com.spring_boot.CSTS.model;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerator;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
@@ -10,7 +8,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "tickets")
-//@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Ticket {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,12 +31,16 @@ public class Ticket {
 	@JoinColumn(name = "created_by")
 	private User createdBy;
 
+	@JsonBackReference
 	@ManyToOne
 	@JoinColumn(name = "assigned_to")
-	private User assignedTo;
+	private SupportAgent assignedTo;
 
 	private LocalDateTime createdAt = LocalDateTime.now();
 	private LocalDateTime updatedAt = LocalDateTime.now();
+
+	public void setStatus(Status status) {
+	}
 
 	public enum Status {
 		OPEN, IN_PROGRESS, ASSIGNED, CLOSED, RESOLVED
@@ -51,6 +53,17 @@ public class Ticket {
 		LOW, MEDIUM, HIGH
 	}
 
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public SupportAgent getAssignedTo() {
+		return assignedTo;
+	}
 
 	public Category getCategory() {
 		return category;
@@ -66,5 +79,8 @@ public class Ticket {
 
 	public void setTeam(Team team) {
 		this.team = team;
+	}
+	public void setAssignedTo(SupportAgent assignedTo) {
+		this.assignedTo = assignedTo;
 	}
 }
