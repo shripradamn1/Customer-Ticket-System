@@ -1,9 +1,11 @@
 package com.spring_boot.CSTS.Service;
 
+import com.spring_boot.CSTS.Repository.TicketRepository;
 import com.spring_boot.CSTS.model.SupportAgent;
 import com.spring_boot.CSTS.model.Team;
 import com.spring_boot.CSTS.Repository.SupportAgentRepository;
 import com.spring_boot.CSTS.Repository.TeamRepository;
+import com.spring_boot.CSTS.model.Ticket;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +16,8 @@ import java.util.Optional;
 public class SupportAgentService {
     @Autowired
     private SupportAgentRepository agentRepository;
+    @Autowired
+    private TicketRepository ticketRepository;
 
     @Autowired
     private TeamRepository teamRepository;
@@ -32,5 +36,17 @@ public class SupportAgentService {
 
     public Optional<SupportAgent> getAgent(Long id){
         return agentRepository.findById(id);
+    }
+    public Ticket updateTicketStatus(Long ticketId, Long agentId, Ticket.Status newStatus){
+        Ticket ticket = ticketRepository.findById(ticketId)
+                .orElseThrow(() -> new RuntimeException("Ticket not found"));
+
+
+        if (!ticket.getAssignedTo().getId().equals(agentId)) {
+            throw new RuntimeException("Unauthorized: This ticket is not assigned to the agent");
+        }
+        ticket.setStatus(newStatus);
+      Ticket updateTicket =ticketRepository.save(ticket);
+      return updateTicket;
     }
 }

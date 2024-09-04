@@ -2,6 +2,7 @@ package com.spring_boot.CSTS.Controller;
 
 import com.spring_boot.CSTS.Service.SupportAgentService;
 import com.spring_boot.CSTS.model.SupportAgent;
+import com.spring_boot.CSTS.model.Ticket;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,6 +29,12 @@ public class SupportAgentController {
     @GetMapping("/{agentid}")
     public Optional<SupportAgent> getAgent(@PathVariable Long agentid){
         return agentService.getAgent(agentid);
+
+    }
+    @PutMapping("/update/{agentid}/{ticketid}")
+    public Optional<Ticket>updateTicket(@PathVariable Long aid,@PathVariable Long tid,@RequestParam String status){
+      Ticket ticket=  agentService.updateTicketStatus(aid,tid, Ticket.Status.valueOf(status));
+      return Optional.ofNullable(ticket);
 
     }
 
