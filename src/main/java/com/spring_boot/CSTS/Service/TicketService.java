@@ -26,15 +26,15 @@ public class TicketService {
     private SupportAgentRepository supportAgentRepository;
 
     public Ticket createTicket(Ticket ticket, Long teamId) {
-        // Fetch the team by ID
+
         Team team = teamRepository.findById(teamId)
                 .orElseThrow(() -> new RuntimeException("Team not found"));
 
-        // Fetch the agents in the team (Set to List conversion)
+
         Set<SupportAgent> agentsSet = team.getAgents();
         List<SupportAgent> agents = new ArrayList<>(agentsSet);
 
-        // Randomly assign the ticket to an agent
+
         if (agents != null && !agents.isEmpty()) {
             Random random = new Random();
             int randomIndex = random.nextInt(Math.min(5, agents.size()));
