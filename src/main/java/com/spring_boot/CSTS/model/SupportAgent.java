@@ -1,10 +1,8 @@
 package com.spring_boot.CSTS.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -15,13 +13,14 @@ public class SupportAgent {
     private Long id;
 
     private String name;
+
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name="team_id")
-    Team team;
+    @JsonBackReference // Back-reference to avoid infinite loop with team
+    @JoinColumn(name = "team_id")
+    private Team team;
 
-    @JsonManagedReference
+    @JsonManagedReference // Managed reference on the other side of the relationship
     @OneToMany(mappedBy = "assignedTo", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-
     private Set<Ticket> assignedTickets;
 
     public Long getId() {
