@@ -6,7 +6,6 @@ import com.spring_boot.CSTS.Repository.UserRepository;
 import com.spring_boot.CSTS.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
-// import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,6 +17,8 @@ import org.springframework.stereotype.Service;
 public class AuthenticationServiceImpl {
 
     public static final String ROLE_USER = "ROLE_USER";
+    public static final String ROLE_AGENT = "ROLE_AGENT";
+    public static final String ROLE_ADMIN= "ROLE_ADMIN";
 
     @Autowired
     public UserRepository userRepository;
@@ -25,7 +26,7 @@ public class AuthenticationServiceImpl {
     @Autowired
     public PasswordEncoder passwordEncoder;
 
-    public void signup(User user) throws Exception {
+    public void  signupUser(User user) throws Exception {
         if(userRepository.findByEmail(user.getEmail()).isPresent() || userRepository.findByUsername(user.getUsername()).isPresent()) {
             throw new Exception("Email or username is already taken");
         }
@@ -33,6 +34,24 @@ public class AuthenticationServiceImpl {
         user.setRole(ROLE_USER);
         userRepository.save(user);
     }
+    public void signupAgent(User agent) throws Exception {
+        if(userRepository.findByEmail(agent.getEmail()).isPresent() || userRepository.findByUsername(agent.getUsername()).isPresent()) {
+            throw new Exception("Email or username is already taken");
+        }
+        agent.setPassword(passwordEncoder.encode(agent.getPassword()));
+        agent.setRole(ROLE_AGENT);
+        userRepository.save(agent);
+    }
+    public void signupAdmin(User admin) throws Exception {
+        if(userRepository.findByEmail(admin.getEmail()).isPresent() || userRepository.findByUsername(admin.getUsername()).isPresent()) {
+            throw new Exception("Email or username is already taken");
+        }
+        admin.setPassword(passwordEncoder.encode(admin.getPassword()));
+        admin.setRole(ROLE_ADMIN);
+        userRepository.save(admin);
+    }
+
+
 
     public UserDetails getCurrentLoggedInUserDetails() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

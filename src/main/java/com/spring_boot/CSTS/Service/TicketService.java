@@ -1,7 +1,9 @@
 package com.spring_boot.CSTS.Service;
 
+import com.spring_boot.CSTS.Repository.CategoryRepository;
 import com.spring_boot.CSTS.Repository.SupportAgentRepository;
 import com.spring_boot.CSTS.Repository.TeamRepository;
+import com.spring_boot.CSTS.model.Category;
 import com.spring_boot.CSTS.model.SupportAgent;
 import com.spring_boot.CSTS.model.Team;
 import com.spring_boot.CSTS.model.Ticket;
@@ -18,14 +20,23 @@ import java.util.Set;
 public class TicketService {
     @Autowired
     private TicketRepository ticketRepository;
-
+    @Autowired
+    private CategoryRepository categoryRepository;
     @Autowired
     private TeamRepository teamRepository;
 
     @Autowired
     private SupportAgentRepository supportAgentRepository;
 
-    public Ticket createTicket(Ticket ticket, Long teamId) {
+    public Ticket createTicket(Long categoryId,Long teamId,Ticket ticket) {
+        if(categoryId==null)
+            throw new IllegalArgumentException("categoryId must be given");
+
+        if (ticket.getTeam() == null || teamId == null) {
+            throw new IllegalArgumentException("Team must be provided for the ticket.");
+        }
+
+        Category category=categoryRepository.findById(categoryId).orElseThrow(() -> new RuntimeException("category not found"));
 
         Team team = teamRepository.findById(teamId)
                 .orElseThrow(() -> new RuntimeException("Team not found"));
@@ -43,7 +54,9 @@ public class TicketService {
         } else {
             throw new RuntimeException("No agents available in the team");
         }
+       // ticket.setCategory(ticket.getCategory());
 
+       ticket.setCategory(category);
         ticket.setTeam(team);
         ticket.setStatus(Ticket.Status.OPEN);
 

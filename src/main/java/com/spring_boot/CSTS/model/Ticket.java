@@ -3,7 +3,6 @@ package com.spring_boot.CSTS.model;
 import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Entity
@@ -41,7 +40,9 @@ public class Ticket {
 
 	public void setStatus(Status status) {
 	}
-
+	public Team getTeam() {
+		return new Team();
+	}
 	public enum Status {
 		OPEN, IN_PROGRESS, ASSIGNED, CLOSED, RESOLVED
 	}
@@ -51,6 +52,13 @@ public class Ticket {
 
 	public enum Priority {
 		LOW, MEDIUM, HIGH
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	public Long getId() {
@@ -73,9 +81,7 @@ public class Ticket {
 		this.category = category;
 	}
 
-	public Team getTeam() {
-		return team;
-	}
+
 
 	public void setTeam(Team team) {
 		this.team = team;

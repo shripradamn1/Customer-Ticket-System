@@ -15,10 +15,13 @@ public class   TicketController {
     @Autowired
     private TicketService ticketService;
 
-    @PostMapping("/team/{teamId}")
-    public Ticket createTicket(@RequestBody Ticket ticket, @PathVariable Long teamId) {
-        return ticketService.createTicket(ticket, teamId);
+    @PostMapping("/{categoryId}/{teamId}")
+    public Ticket createTicket(@PathVariable Long categoryId, @PathVariable Long teamId, @RequestBody Ticket ticketData) {
+        return ticketService.createTicket(categoryId, teamId, ticketData);
     }
+
+
+
 
     @GetMapping
     public ResponseEntity<List<Ticket>> getAllTickets() {
