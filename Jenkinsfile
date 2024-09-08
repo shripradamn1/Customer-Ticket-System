@@ -14,15 +14,6 @@ pipeline {
     }
 
     stages {
-        stage('Checkout') {
-            steps {
-                // Checkout code from Git repository
-                checkout([$class: 'GitSCM', 
-                          userRemoteConfigs: [[url: 'https://github.com/shripradamn1/Customer-Ticket-System.git']]
-                ])
-            }
-        }
-        
         stage('Build') {
             steps {
                 // Build the project using Maven
