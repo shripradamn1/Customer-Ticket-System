@@ -5,7 +5,7 @@ pipeline {
         // Define environment variables
         JAVA_HOME = tool name: 'OpenJDK 17', type: 'jdk' // Ensure this matches the OpenJDK configuration name in Jenkins
         MAVEN_HOME = tool name: 'Maven 3.9.8', type: 'maven' // Ensure this matches the Maven configuration name in Jenkins
-        PATH = "${env.MAVEN_HOME}/bin:${env.PATH}" // Add Maven to the PATH
+       // PATH = "${env.MAVEN_HOME}/bin:${env.PATH}" // Add Maven to the PATH
     }
 
     tools {
