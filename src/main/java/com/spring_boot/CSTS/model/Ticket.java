@@ -26,36 +26,45 @@ public class Ticket {
 	@Enumerated(EnumType.STRING)
 	private Status status;
 
-	@ManyToOne
 	@JoinColumn(name = "created_by")
-	private User createdBy;
+	private Long userId;
 
 	@JsonBackReference
 	@ManyToOne
 	@JoinColumn(name = "assigned_to")
 	private SupportAgent assignedTo;
 
+//	@JsonBackReference
+//	@ManyToOne
+//	@JoinColumn(name = "assigned_to")
+//	private User assignedToUser;
+
+
 	private LocalDateTime createdAt = LocalDateTime.now();
 	private LocalDateTime updatedAt = LocalDateTime.now();
 
-	public void setStatus(Status status) {
-	}
+
+
+
 	public Team getTeam() {
 		return new Team();
 	}
 	public enum Status {
 		OPEN, IN_PROGRESS, ASSIGNED, CLOSED, RESOLVED
 	}
+	public void setStatus(Status status) {
+		this.status=status;
+	}
 
 	@Enumerated(EnumType.STRING)
 	private Priority priority;
 
 	public enum Priority {
-		LOW, MEDIUM, HIGH
-	}
+		LOW, MEDIUM, HIGH}
 
 	public void setTitle(String title) {
-		this.title = title;
+		this.title =
+				title;
 	}
 	public void setDescription(String description) {
 		this.description = description;
@@ -69,8 +78,12 @@ public class Ticket {
 		this.id = id;
 	}
 
-	public SupportAgent getAssignedTo() {
-		return assignedTo;
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
 	}
 
 	public Category getCategory() {
@@ -82,11 +95,29 @@ public class Ticket {
 	}
 
 
+	public void setAssignedTo(SupportAgent assignedTo) {
+		this.assignedTo = assignedTo;
+	}
+
+	public SupportAgent getAssignedTo() {
+		return assignedTo;
+	}
 
 	public void setTeam(Team team) {
 		this.team = team;
 	}
-	public void setAssignedTo(SupportAgent assignedTo) {
-		this.assignedTo = assignedTo;
+
+
+	public String getTitle() {
+		return title;
 	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public Status getStatus() {
+		return status;
+	}
+
 }

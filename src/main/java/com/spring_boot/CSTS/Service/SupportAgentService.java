@@ -1,6 +1,8 @@
 package com.spring_boot.CSTS.Service;
 
+import com.spring_boot.CSTS.Repository.CategoryRepository;
 import com.spring_boot.CSTS.Repository.TicketRepository;
+import com.spring_boot.CSTS.model.Category;
 import com.spring_boot.CSTS.model.SupportAgent;
 import com.spring_boot.CSTS.model.Team;
 import com.spring_boot.CSTS.Repository.SupportAgentRepository;
@@ -18,13 +20,18 @@ public class SupportAgentService {
     private SupportAgentRepository agentRepository;
     @Autowired
     private TicketRepository ticketRepository;
+    @Autowired
+    private CategoryRepository categoryRepository;
 
     @Autowired
     private TeamRepository teamRepository;
 
-    public SupportAgent createAgent(Long teamId, SupportAgent agent) {
+    public SupportAgent createAgent(Long categoryId,Long teamId, SupportAgent agent) {
+        Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new RuntimeException("category not found"));
         Team team = teamRepository.findById(teamId)
                 .orElseThrow(() -> new RuntimeException("Team not found"));
+
+        agent.setCategory(category);
 
         agent.setTeam(team);
         return agentRepository.save(agent);
@@ -34,8 +41,8 @@ public class SupportAgentService {
     }
 
 
-    public Optional<SupportAgent> getAgent(Long id){
-        return agentRepository.findById(id);
+    public Optional<SupportAgent> getAgentById  (String agentusername){
+        return agentRepository.findByUsername(agentusername);
     }
     public Ticket updateTicketStatus(Long ticketId, Long agentId, Ticket.Status newStatus){
         Ticket ticket = ticketRepository.findById(ticketId)

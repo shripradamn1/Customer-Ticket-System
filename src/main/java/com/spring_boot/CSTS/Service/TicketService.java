@@ -11,10 +11,7 @@ import com.spring_boot.CSTS.Repository.TicketRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class TicketService {
@@ -28,7 +25,7 @@ public class TicketService {
     @Autowired
     private SupportAgentRepository supportAgentRepository;
 
-    public Ticket createTicket(Long categoryId,Long teamId,Ticket ticket) {
+    public Ticket createTicket(Long userId,Long categoryId,Long teamId,Ticket ticket) {
         if(categoryId==null)
             throw new IllegalArgumentException("categoryId must be given");
 
@@ -55,7 +52,7 @@ public class TicketService {
             throw new RuntimeException("No agents available in the team");
         }
        // ticket.setCategory(ticket.getCategory());
-
+    ticket.setUserId(userId);
        ticket.setCategory(category);
         ticket.setTeam(team);
         ticket.setStatus(Ticket.Status.OPEN);
@@ -71,8 +68,8 @@ public class TicketService {
         return ticketRepository.findAll();
     }
 
-    public Ticket getTicketById(Long id) {
-        return ticketRepository.findById(id).orElse(null);
+    public Ticket getTicketByUserId(Long id) {
+        return (Ticket) ticketRepository.findByUserId(id);
     }
 
     public Ticket updateTicket(Ticket ticket) {
@@ -81,5 +78,23 @@ public class TicketService {
 
     public void deleteTicket(Long id) {
         ticketRepository.deleteById(id);
+    }
+    public List<Ticket> getTicketsByAgent(Optional<SupportAgent> agent) {
+        return ticketRepository.findByAssignedTo(agent);
+    }
+
+    public Ticket findTicketByTitle(String title) {
+        return ticketRepository.findByTitle(title);
+    }
+
+    public Ticket updateTicketStatus(Long ticketId, Ticket.Status newStatus) throws Exception {
+        Optional<Ticket> ticketOptional = ticketRepository.findById(ticketId);
+        if (ticketOptional.isPresent()) {
+            Ticket ticket = ticketOptional.get();
+            ticket.setStatus(newStatus); // Assuming your Ticket entity has a `setStatus` method
+            return ticketRepository.save(ticket);
+        } else {
+            throw new Exception("Ticket not found");
+        }
     }
 }
