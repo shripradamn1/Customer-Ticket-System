@@ -18,6 +18,7 @@ pipeline {
             steps {
                 // Build the project using Maven
                 echo 'Build successful'
+                //bat 'mvn clean install'
             }
         }
         
@@ -25,6 +26,7 @@ pipeline {
             steps {
                 // Run tests using Maven
                 echo 'Test successful'
+                //bat 'mvn test'
             }
         }
         
@@ -32,6 +34,7 @@ pipeline {
             steps {
                 // Package the project using Maven
                 echo 'Success'
+                //bat 'mvn package'
             }
         }
     }
