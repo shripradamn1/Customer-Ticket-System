@@ -14,35 +14,48 @@ pipeline {
         jdk 'OpenJDK 17' // Ensure this matches the OpenJDK installation name in Jenkins
     }
 
+    
     stages {
         stage('Checkout') {
             steps {
-                // Checkout the code from your SCM (e.g., Git)
-                checkout scm
+                // Checkout code from Git repository
+                checkout([$class: 'GitSCM', 
+                          userRemoteConfigs: [[url: 'https://github.com/shripradamn1/Customer-Ticket-System.git']]
+                ])
             }
         }
-
+        
         stage('Build') {
             steps {
-                // Run Maven build command using Maven Wrapper
-                sh './mvnw clean package' // Use the Maven Wrapper if available; otherwise use 'mvn clean package'
+                // Execute build commands
+                bat 'echo Building...'
+                // Replace with actual build command, for example:
+                // bat 'msbuild /p:Configuration=Release'
             }
         }
-
+        
         stage('Test') {
             steps {
-                // Run Maven test command using Maven Wrapper
-                sh './mvnw test' // Use the Maven Wrapper if available; otherwise use 'mvn test'
+                // Execute test commands
+                bat 'echo Testing...'
+                // Replace with actual test command, for example:
+                // bat 'vstest.console.exe TestProject.dll'
             }
         }
-
+        
         stage('Package') {
             steps {
-                // Optionally, run the packaging command if needed
-                sh './mvnw package' // If you don't have Maven Wrapper, use 'mvn package'
+                // Execute packaging commands
+                bat 'echo Packaging...'
+                // Replace with actual packaging command, for example:
+                // bat 'dotnet publish -c Release'
             }
         }
     }
+    
+   
+}
+
 
     post {
         success {
