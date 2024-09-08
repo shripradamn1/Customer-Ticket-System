@@ -2,16 +2,16 @@ pipeline {
     agent any // Use any available Jenkins agent
 
     environment {
-        // Define environment variables that are used during the build
-        JAVA_HOME = tool name: 'JDK 17', type: 'jdk' // Replace with your JDK installation name
-        MAVEN_HOME = tool name: 'Maven 3.9.8', type: 'maven' // Replace with your Maven installation name
-        //PATH = "${env.MAVEN_HOME}/bin:${env.PATH}" // Add Maven to the PATH
+        // Define environment variables
+        JAVA_HOME = tool name: 'OpenJDK 17', type: 'jdk' // Ensure this matches the OpenJDK configuration name in Jenkins
+        MAVEN_HOME = tool name: 'Maven 3.9.8', type: 'maven' // Ensure this matches the Maven configuration name in Jenkins
+        PATH = "${env.MAVEN_HOME}/bin:${env.PATH}" // Add Maven to the PATH
     }
 
     tools {
-        // Specify the Maven and JDK versions to use
-        maven 'Maven 3.9.8' // This should match the Maven installation name in Jenkins
-        jdk 'JDK 17' // This should match the JDK installation name in Jenkins
+        // Specify the Maven and OpenJDK versions to use
+        maven 'Maven 3.9.8' // Ensure this matches the Maven installation name in Jenkins
+        jdk 'OpenJDK 17' // Ensure this matches the OpenJDK installation name in Jenkins
     }
 
     stages {
