@@ -14,7 +14,6 @@ pipeline {
         jdk 'OpenJDK 17' // Ensure this matches the OpenJDK installation name in Jenkins
     }
 
-    
     stages {
         stage('Checkout') {
             steps {
@@ -53,10 +52,6 @@ pipeline {
         }
     }
     
-   
-}
-
-
     post {
         success {
             // Actions to perform on successful build
