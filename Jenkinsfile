@@ -3,14 +3,14 @@ pipeline {
 
     environment {
         // Define environment variables
-        JAVA_HOME = tool name: 'OpenJDK 17', type: 'jdk' // Ensure this matches the OpenJDK configuration name in Jenkins
+        JAVA_HOME = tool name: 'Java 21', type: 'jdk' // Ensure this matches the OpenJDK configuration name in Jenkins
         MAVEN_HOME = tool name: 'Maven 3.9.8', type: 'maven' // Ensure this matches the Maven configuration name in Jenkins
     }
 
     tools {
         // Specify the Maven and OpenJDK versions to use
         maven 'Maven 3.9.8' // Ensure this matches the Maven installation name in Jenkins
-        jdk 'OpenJDK 17' // Ensure this matches the OpenJDK installation name in Jenkins
+        jdk 'Java 21' // Ensure this matches the OpenJDK installation name in Jenkins
     }
 
     stages {
