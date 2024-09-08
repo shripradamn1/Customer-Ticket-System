@@ -5,7 +5,6 @@ pipeline {
         // Define environment variables
         JAVA_HOME = tool name: 'OpenJDK 17', type: 'jdk' // Ensure this matches the OpenJDK configuration name in Jenkins
         MAVEN_HOME = tool name: 'Maven 3.9.8', type: 'maven' // Ensure this matches the Maven configuration name in Jenkins
-       // PATH = "${env.MAVEN_HOME}/bin:${env.PATH}" // Add Maven to the PATH
     }
 
     tools {
@@ -26,28 +25,22 @@ pipeline {
         
         stage('Build') {
             steps {
-                // Execute build commands
-                bat 'echo Building...'
-                // Replace with actual build command, for example:
-                // bat 'msbuild /p:Configuration=Release'
+                // Build the project using Maven
+                bat 'mvn clean install'
             }
         }
         
         stage('Test') {
             steps {
-                // Execute test commands
-                bat 'echo Testing...'
-                // Replace with actual test command, for example:
-                // bat 'vstest.console.exe TestProject.dll'
+                // Run tests using Maven
+                bat 'mvn test'
             }
         }
         
         stage('Package') {
             steps {
-                // Execute packaging commands
-                bat 'echo Packaging...'
-                // Replace with actual packaging command, for example:
-                // bat 'dotnet publish -c Release'
+                // Package the project using Maven
+                bat 'mvn package'
             }
         }
     }
