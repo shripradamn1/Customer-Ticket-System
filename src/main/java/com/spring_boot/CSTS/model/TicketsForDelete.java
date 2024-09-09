@@ -9,4 +9,6 @@ public class TicketsForDelete {
         this.id=id;
         this.title=title;
     }
+    public TicketsForDelete() {
+    }
 }
