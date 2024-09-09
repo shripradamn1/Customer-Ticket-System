@@ -17,24 +17,24 @@ pipeline {
         stage('Build') {
             steps {
                 // Build the project using Maven
-                echo 'Build successful'
-                //bat 'mvn clean install'
+                //echo 'Build successful'
+                bat 'mvn clean install'
             }
         }
         
         stage('Test') {
             steps {
                 // Run tests using Maven
-                echo 'Test successful'
-                //bat 'mvn test'
+                //echo 'Test successful'
+                bat 'mvn test'
             }
         }
         
         stage('Package') {
             steps {
                 // Package the project using Maven
-                echo 'Success'
-                //bat 'mvn package'
+                //echo 'Success'
+                bat 'mvn package'
             }
         }
     }
