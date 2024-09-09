@@ -8,11 +8,8 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-//@Repository
+@Repository
 public interface TicketRepository extends JpaRepository<Ticket, Long> {
-//    @Transactional
-//    @Modifying
-//    @Query(value = "ALTER TABLE your_table AUTO_INCREMENT = 1", nativeQuery = true)
-//    void resetAutoIncrement();
+
 }
 

@@ -5,7 +5,9 @@ import com.spring_boot.CSTS.model.Ticket;
 import com.spring_boot.CSTS.model.TicketLog;
 import com.spring_boot.CSTS.model.SupportAgent;
 import com.spring_boot.CSTS.model.Team;
+import com.spring_boot.CSTS.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,10 +29,20 @@ public class TicketService {
     private TicketLogService ticketLogService;
 
     @Autowired
-    private EmailService emailService;  // Add email service
+    private EmailService emailService;  
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Transactional
     public Ticket createTicket(Ticket ticket, Long teamId) {
+        // Fetch the logged-in user's username
+        String loggedInUsername = SecurityContextHolder.getContext().getAuthentication().getName();
+        
+        // Fetch the full user details from the database
+        User loggedInUser = userRepository.findByUsername(loggedInUsername)
+            .orElseThrow(() -> new RuntimeException("Logged-in user not found"));
+
         Team team = teamRepository.findById(teamId)
                 .orElseThrow(() -> new RuntimeException("Team not found"));
 
@@ -50,13 +62,13 @@ public class TicketService {
 
         Ticket savedTicket = ticketRepository.save(ticket);
 
-        // Send email notification for ticket creation
+        // Send dynamic email notification for ticket creation
         String subject = "New Ticket Created: " + savedTicket.getTitle();
         String body = "A new ticket has been created with the following details:\n" +
                       "Ticket ID: " + savedTicket.getId() + "\n" +
                       "Title: " + savedTicket.getTitle() + "\n" +
                       "Assigned To: " + savedTicket.getAssignedTo().getName();
-        emailService.sendEmail("dhruv15.khandelwal@gmail.com", subject, body);
+        emailService.sendEmail(loggedInUser.getEmail(), subject, body);  // Send email to logged-in user
 
         return savedTicket;
     }
@@ -74,9 +86,17 @@ public class TicketService {
         Ticket existingTicket = ticketRepository.findById(updatedTicket.getId())
                 .orElseThrow(() -> new RuntimeException("Ticket not found"));
 
+        // Fetch the logged-in user's username
+        String loggedInUsername = SecurityContextHolder.getContext().getAuthentication().getName();
+        
+        // Fetch the full user details from the database
+        User loggedInUser = userRepository.findByUsername(loggedInUsername)
+            .orElseThrow(() -> new RuntimeException("Logged-in user not found"));
+
         // Capture changes and create a log
         TicketLog log = new TicketLog();
         log.setTicket(existingTicket);
+        
 
         if (!Objects.equals(existingTicket.getStatus(), updatedTicket.getStatus())) {
             log.setMessage("Status changed from " + existingTicket.getStatus() + " to " + updatedTicket.getStatus());
@@ -90,12 +110,12 @@ public class TicketService {
 
         Ticket savedTicket = ticketRepository.save(updatedTicket);
 
-        // Send email notification for ticket update
+        // Send dynamic email notification for ticket update
         String subject = "Ticket Updated: " + savedTicket.getTitle();
         String body = "Ticket ID: " + savedTicket.getId() + " has been updated.\n" +
                       "Updated Status: " + savedTicket.getStatus() + "\n" +
                       "Assigned To: " + savedTicket.getAssignedTo().getName();
-        emailService.sendEmail("dhruv15.khandelwal@gmail.com", subject, body);
+        emailService.sendEmail(loggedInUser.getEmail(), subject, body);  // Send email to logged-in user
 
         return savedTicket;
     }

@@ -10,3 +10,4 @@ import java.util.List;
 public interface TicketLogRepository extends JpaRepository<TicketLog, Long> {
     List<TicketLog> findByTicketId(Long ticketId);
 }
+
