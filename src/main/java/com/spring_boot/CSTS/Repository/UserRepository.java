@@ -1,7 +1,6 @@
 
 package com.spring_boot.CSTS.Repository;
 
-import com.spring_boot.CSTS.model.Team;
 import com.spring_boot.CSTS.model.User;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -22,7 +21,4 @@ public interface UserRepository extends JpaRepository<User, Long> {
     public Optional<User> findByEmail(String email);
 
     public Optional<User> findByUsername(String username);
-
-
-	Optional<Team> findById(User createdBy);
 }

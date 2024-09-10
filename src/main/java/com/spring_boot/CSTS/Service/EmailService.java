@@ -7,21 +7,14 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class EmailService {
-
     @Autowired
     private JavaMailSender mailSender;
 
-    public void sendEmail(String to, String subject, String body) {
-    	
-    	if (!to.matches("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$")) {
-    	    throw new IllegalArgumentException("Invalid email address");
-    	}
-
+    public void sendSimpleMessage(String to, String subject, String text) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(to);
         message.setSubject(subject);
-        message.setText(body);
+        message.setText(text);
         mailSender.send(message);
     }
-
 }
