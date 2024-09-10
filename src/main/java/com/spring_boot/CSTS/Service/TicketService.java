@@ -69,8 +69,8 @@ public class TicketService {
             throw new RuntimeException("No agents available in the team");
         }
        // ticket.setCategory(ticket.getCategory());
-    ticket.setUserId(userId);
-       ticket.setCategory(category);
+        ticket.setId(userId);
+        ticket.setCategory(category);
         ticket.setTeam(team);
         ticket.setStatus(Ticket.Status.OPEN);
 

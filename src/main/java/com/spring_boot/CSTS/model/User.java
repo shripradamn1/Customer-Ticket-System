@@ -36,6 +36,9 @@ public class User implements UserDetails {
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private String password;
 
+	@Column(name = "CreatedAt", nullable = false, updatable = false)
+	@CreationTimestamp
+	private Timestamp createdAt;
 //	@Column(name = "CreatedAt", nullable = false, updatable = false)
 //	@CreationTimestamp
 //	private Timestamp createdAt;
@@ -81,7 +84,6 @@ public class User implements UserDetails {
 		return true;
 	}
 
-	
 
 	public Integer getId() {
 		return id;
