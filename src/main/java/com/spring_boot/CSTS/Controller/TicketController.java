@@ -5,7 +5,6 @@ import com.spring_boot.CSTS.Service.SupportAgentService;
 import com.spring_boot.CSTS.model.*;
 import com.spring_boot.CSTS.Service.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +16,8 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/tickets")
-public class   TicketController {
+public class TicketController {
+
     @Autowired
     TicketRepository ticketRepository;
     @Autowired
@@ -30,6 +30,7 @@ public class   TicketController {
         return ticketService.createTicket(userId, categoryId, teamId, ticketData);
     }
 
+    // Get all tickets
     @GetMapping
     public ResponseEntity<List<TicketsForDelete>> getAllTickets() {
 
@@ -38,10 +39,6 @@ public class   TicketController {
         return ResponseEntity.ok(ticketsForDeletes);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Ticket> getTicketById(@PathVariable Long id) {
-        return ResponseEntity.ok(ticketService.getTicketByUserId(id));
-    }
 
     @GetMapping("/userId/{userId}")
     public List<TicketsForTitle> getTicketsByUserId(@PathVariable Long userId) {

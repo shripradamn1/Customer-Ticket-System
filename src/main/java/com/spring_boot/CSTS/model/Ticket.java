@@ -4,120 +4,165 @@ import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "tickets")
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Ticket {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
-	private String title;
-	private String description;
 
-	@ManyToOne
-	@JoinColumn(name = "category_id")
-	private Category category;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private String title;
+    private String description;
 
-	@ManyToOne
-	@JoinColumn(name = "team_id")
-	private Team team;
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
 
-	@Enumerated(EnumType.STRING)
-	private Status status;
+    @ManyToOne
+    @JoinColumn(name = "team_id")
+    private Team team;
 
-	@JoinColumn(name = "created_by")
-	private Long userId;
+    @Enumerated(EnumType.STRING)
+    private Status status;
 
-	@JsonBackReference
-	@ManyToOne
-	@JoinColumn(name = "assigned_to")
-	private SupportAgent assignedTo;
+    @ManyToOne
+    @JoinColumn(name = "created_by")
+    private User createdBy;
 
-//	@JsonBackReference
-//	@ManyToOne
-//	@JoinColumn(name = "assigned_to")
-//	private User assignedToUser;
+    @JsonBackReference // Back reference to avoid infinite loop with SupportAgent
+    @ManyToOne
+    @JoinColumn(name = "assigned_to")
+    private SupportAgent assignedTo;
 
+    private LocalDateTime createdAt = LocalDateTime.now();
+    private LocalDateTime updatedAt = LocalDateTime.now();
 
-	private LocalDateTime createdAt = LocalDateTime.now();
-	private LocalDateTime updatedAt = LocalDateTime.now();
+    @Enumerated(EnumType.STRING)
+    private Priority priority;
 
+    @OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore // Ignored to avoid looping during serialization
+    private List<TicketLog> logs = new ArrayList<>();
 
+    @OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore // Ignored to avoid looping during serialization
+    private List<Attachment> attachments = new ArrayList<>();
 
+    public enum Status {
+        OPEN, IN_PROGRESS, ASSIGNED, CLOSED, RESOLVED
+    }
 
-	public Team getTeam() {
-		return new Team();
-	}
-	public enum Status {
-		OPEN, IN_PROGRESS, ASSIGNED, CLOSED, RESOLVED
-	}
-	public void setStatus(Status status) {
-		this.status=status;
-	}
+    public enum Priority {
+        LOW, MEDIUM, HIGH
+    }
 
-	@Enumerated(EnumType.STRING)
-	private Priority priority;
+    // Getters and Setters
 
-	public enum Priority {
-		LOW, MEDIUM, HIGH}
+    public Long getId() {
+        return id;
+    }
 
-	public void setTitle(String title) {
-		this.title =
-				title;
-	}
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public Long getId() {
-		return id;
-	}
+    public String getTitle() {
+        return title;
+    }
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
-	public Long getUserId() {
-		return userId;
-	}
+    public String getDescription() {
+        return description;
+    }
 
-	public void setUserId(Long userId) {
-		this.userId = userId;
-	}
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-	public Category getCategory() {
-		return category;
-	}
+    public Category getCategory() {
+        return category;
+    }
 
-	public void setCategory(Category category) {
-		this.category = category;
-	}
+    public void setCategory(Category category) {
+        this.category = category;
+    }
 
+    public Team getTeam() {
+        return team;
+    }
 
-	public void setAssignedTo(SupportAgent assignedTo) {
-		this.assignedTo = assignedTo;
-	}
+    public void setTeam(Team team) {
+        this.team = team;
+    }
 
-	public SupportAgent getAssignedTo() {
-		return assignedTo;
-	}
+    public Status getStatus() {
+        return status;
+    }
 
-	public void setTeam(Team team) {
-		this.team = team;
-	}
+    public void setStatus(Status status) {
+        this.status = status;
+    }
 
+    public User getCreatedBy() {
+        return createdBy;
+    }
 
-	public String getTitle() {
-		return title;
-	}
+    public void setCreatedBy(User createdBy) {
+        this.createdBy = createdBy;
+    }
 
-	public String getDescription() {
-		return description;
-	}
+    public SupportAgent getAssignedTo() {
+        return assignedTo;
+    }
 
-	public Status getStatus() {
-		return status;
-	}
+    public void setAssignedTo(SupportAgent assignedTo) {
+        this.assignedTo = assignedTo;
+    }
 
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public Priority getPriority() {
+        return priority;
+    }
+
+    public void setPriority(Priority priority) {
+        this.priority = priority;
+    }
+
+    public List<TicketLog> getLogs() {
+        return logs;
+    }
+
+    public void setLogs(List<TicketLog> logs) {
+        this.logs = logs;
+    }
+
+    public List<Attachment> getAttachments() {
+        return attachments;
+    }
+
+    public void setAttachments(List<Attachment> attachments) {
+        this.attachments = attachments;
+    }
 }

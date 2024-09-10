@@ -80,25 +80,48 @@ public class User implements UserDetails {
 	public boolean isEnabled() {
 		return true;
 	}
-	//@Override
-//	public Set<Ticket> getAssignedTickets()
-//	{
-//		return assignedTickets;
-//	}
-//	//@Override
-//	public Team getTeam() {
-//		return team;
-//	}
-//	//@Override
-//
-//	public void setTeam(Team team) {
-//		this.team = team;
-//	}
-//
-//	public void setAssignedTickets(Set<Ticket> assignedTickets) {
-//		this.assignedTickets = assignedTickets;
-//	}
 
+	
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getRole() {
+		return role;
+	}
+
+	public void setRole(String role) {
+		this.role = role;
+	}
+
+	public Timestamp getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(Timestamp createdAt) {
+		this.createdAt = createdAt;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
 
 	@Override
 	public java.util.Collection<? extends GrantedAuthority> getAuthorities() {
