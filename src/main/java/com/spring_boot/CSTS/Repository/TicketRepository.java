@@ -12,7 +12,7 @@ import java.util.Optional;
 public interface TicketRepository extends JpaRepository<Ticket, Long> {
     List<Ticket> findByAssignedTo(Optional<SupportAgent> assignedTo);
     List<Ticket> findByUserId(Long userId);
-    Ticket findByTitle(String title);
+    Optional<Ticket> findByTitle(String title);
 
    // List<Ticket> findByAgent(SupportAgent agent);
 //    @Transactional

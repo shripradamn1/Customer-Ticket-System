@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "tickets")
@@ -44,11 +46,14 @@ public class Ticket {
 	private LocalDateTime updatedAt = LocalDateTime.now();
 
 
-
-
 	public Team getTeam() {
 		return new Team();
 	}
+	
+	@OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore // Ignored to avoid looping during serialization
+    private List<Attachment> attachments = new ArrayList<>();
+	
 	public enum Status {
 		OPEN, IN_PROGRESS, ASSIGNED, CLOSED, RESOLVED
 	}
@@ -60,7 +65,8 @@ public class Ticket {
 	private Priority priority;
 
 	public enum Priority {
-		LOW, MEDIUM, HIGH}
+		LOW, MEDIUM, HIGH
+		}
 
 	public void setTitle(String title) {
 		this.title =
@@ -119,5 +125,12 @@ public class Ticket {
 	public Status getStatus() {
 		return status;
 	}
+	public List<Attachment> getAttachments() {
+        return attachments;
+    }
+
+    public void setAttachments(List<Attachment> attachments) {
+        this.attachments = attachments;
+    }
 
 }
