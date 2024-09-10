@@ -14,29 +14,25 @@ import java.util.Optional;
 public class SupportAgentController {
     @Autowired
     private SupportAgentService supportAgentService;
-
     @Autowired
     private SupportAgentService agentService;
-
-    @PostMapping("/team/{teamId}")
-    public SupportAgent createAgent(@PathVariable Long teamId, @RequestBody SupportAgent agent) {
-        return agentService.createAgent(teamId, agent);
+    @PostMapping("/category/{categoryId}/team/{teamId}")
+    public SupportAgent createAgent(@PathVariable Long categoryId,@PathVariable Long teamId, @RequestBody SupportAgent agent) {
+        return agentService.createAgent(categoryId,teamId, agent);
     }
     @GetMapping
     public List<SupportAgent> getagents(){
         return agentService.getAgents();
     }
-    @GetMapping("/{agentid}")
-    public Optional<SupportAgent> getAgent(@PathVariable Long agentid){
-        return agentService.getAgent(agentid);
-
-    }
+//    @GetMapping("/{agentid}")
+//    public Optional<SupportAgent> getAgent(@PathVariable Long agentid){
+//        return agentService.getAgentById(agentid);
+//
+//    }
     @PutMapping("/update/{agentid}/{ticketid}")
     public Optional<Ticket>updateTicket(@PathVariable Long aid,@PathVariable Long tid,@RequestParam String status){
       Ticket ticket=  agentService.updateTicketStatus(aid,tid, Ticket.Status.valueOf(status));
       return Optional.ofNullable(ticket);
 
     }
-
-
 }

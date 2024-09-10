@@ -1,5 +1,6 @@
 package com.spring_boot.CSTS.Repository;
 
+import com.spring_boot.CSTS.model.Category;
 import com.spring_boot.CSTS.model.Team;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,6 +12,10 @@ import java.util.List;
 //@Repository
 public interface TeamRepository extends JpaRepository<Team, Long> {
     List<Team> findAllById(Iterable<Long> ids);
+
+   // List<Team> findByCategory(Category category);
+
+    List<Team> findByCategoryId(Long categoryId);
 
 //    @Transactional
 //    @Modifying

@@ -30,10 +30,20 @@ public class AuthController {
     @Autowired
     public AuthenticationServiceImpl authService;
 
-    @PostMapping("/signup")
-    public ResponseEntity<String> signup(@RequestBody User user) throws Exception {
-        authService.signup(user);
+    @PostMapping("/signup/user")
+    public ResponseEntity<String> signupUser(@RequestBody User user) throws Exception {
+        authService.signupUser(user);
         return new ResponseEntity<String>("User succefully created", HttpStatus.CREATED);
+    }
+    @PostMapping("/signup/agent")
+    public ResponseEntity<String> signupAgent(@RequestBody User agent) throws Exception {
+        authService.signupAgent(agent);
+        return new ResponseEntity<String>("agent succefully created", HttpStatus.CREATED);
+    }
+    @PostMapping("/signup/admin")
+    public ResponseEntity<String> signupAdmin(@RequestBody User admin) throws Exception {
+        authService.signupAdmin(admin);
+        return new ResponseEntity<String>("admin succefully created", HttpStatus.CREATED);
     }
 
 

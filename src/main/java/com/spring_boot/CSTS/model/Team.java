@@ -13,7 +13,6 @@ public class Team {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String name;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -29,6 +28,9 @@ public class Team {
     @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private Set<SupportAgent> agents = new HashSet<>();
+
+//    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private Set<User> users = new HashSet<>();
 
     public Long getId()
     {

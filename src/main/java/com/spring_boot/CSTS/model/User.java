@@ -1,6 +1,9 @@
 package com.spring_boot.CSTS.model;
 import java.sql.Timestamp;
+import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -8,12 +11,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -22,7 +19,6 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "Users")
 public class User implements UserDetails {
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
@@ -40,9 +36,20 @@ public class User implements UserDetails {
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private String password;
 
-	@Column(name = "CreatedAt", nullable = false, updatable = false)
-	@CreationTimestamp
-	private Timestamp createdAt;
+//	@Column(name = "CreatedAt", nullable = false, updatable = false)
+//	@CreationTimestamp
+//	private Timestamp createdAt;
+//	@ManyToOne(fetch = FetchType.EAGER)
+//	@JoinColumn(name = "category_id", nullable = false)  // Assuming every user needs to belong to a category
+//	private Category category;
+//
+//
+//	@ManyToOne(fetch = FetchType.EAGER)
+//	@JoinColumn(name="team_id")
+//	private Team team;
+//	@JsonManagedReference
+//	@OneToMany(mappedBy = "assignedTo", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//	private Set<Ticket> assignedTickets;
 
 	@Override
 	public String getPassword() {
@@ -73,6 +80,7 @@ public class User implements UserDetails {
 	public boolean isEnabled() {
 		return true;
 	}
+
 	
 
 	public Integer getId() {

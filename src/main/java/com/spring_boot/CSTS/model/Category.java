@@ -25,8 +25,6 @@ public class Category {
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 //    @JsonBackReference
     private Set<Team> teams = new HashSet<>();
-
-
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Ticket> tickets = new HashSet<>();
 

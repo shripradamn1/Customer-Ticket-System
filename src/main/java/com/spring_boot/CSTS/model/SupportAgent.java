@@ -14,10 +14,14 @@ public class SupportAgent {
 
     private String name;
 
+    private String username;
     @ManyToOne(fetch = FetchType.EAGER)
-    @JsonBackReference // Back-reference to avoid infinite loop with team
-    @JoinColumn(name = "team_id")
-    private Team team;
+    @JoinColumn(name="team_id")
+    Team team;
+    @ManyToOne(fetch = FetchType.LAZY) // Consider using LAZY here too
+    @JoinColumn(name="category_id")
+    private Category category;
+
 
     @JsonManagedReference // Managed reference on the other side of the relationship
     @OneToMany(mappedBy = "assignedTo", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -53,5 +57,20 @@ public class SupportAgent {
 
     public void setAssignedTickets(Set<Ticket> assignedTickets) {
         this.assignedTickets = assignedTickets;
+    }
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

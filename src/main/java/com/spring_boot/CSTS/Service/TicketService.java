@@ -3,6 +3,9 @@ package com.spring_boot.CSTS.Service;
 import com.spring_boot.CSTS.Repository.*;
 import com.spring_boot.CSTS.model.Ticket;
 import com.spring_boot.CSTS.model.TicketLog;
+import com.spring_boot.CSTS.Repository.SupportAgentRepository;
+import com.spring_boot.CSTS.Repository.TeamRepository;
+import com.spring_boot.CSTS.model.Category;
 import com.spring_boot.CSTS.model.SupportAgent;
 import com.spring_boot.CSTS.model.Team;
 import com.spring_boot.CSTS.model.User;
@@ -18,7 +21,8 @@ public class TicketService {
 
     @Autowired
     private TicketRepository ticketRepository;
-
+    @Autowired
+    private CategoryRepository categoryRepository;
     @Autowired
     private TeamRepository teamRepository;
 
@@ -34,14 +38,22 @@ public class TicketService {
     @Autowired
     private UserRepository userRepository;
 
-    @Transactional
-    public Ticket createTicket(Ticket ticket, Long teamId) {
         // Fetch the logged-in user's username
         String loggedInUsername = SecurityContextHolder.getContext().getAuthentication().getName();
         
         // Fetch the full user details from the database
         User loggedInUser = userRepository.findByUsername(loggedInUsername)
             .orElseThrow(() -> new RuntimeException("Logged-in user not found"));
+
+    public Ticket createTicket(Long userId,Long categoryId,Long teamId,Ticket ticket) {
+        if(categoryId==null)
+            throw new IllegalArgumentException("categoryId must be given");
+
+        if (ticket.getTeam() == null || teamId == null) {
+            throw new IllegalArgumentException("Team must be provided for the ticket.");
+        }
+
+        Category category=categoryRepository.findById(categoryId).orElseThrow(() -> new RuntimeException("category not found"));
 
         Team team = teamRepository.findById(teamId)
                 .orElseThrow(() -> new RuntimeException("Team not found"));
@@ -56,7 +68,9 @@ public class TicketService {
         } else {
             throw new RuntimeException("No agents available in the team");
         }
-
+       // ticket.setCategory(ticket.getCategory());
+    ticket.setUserId(userId);
+       ticket.setCategory(category);
         ticket.setTeam(team);
         ticket.setStatus(Ticket.Status.OPEN);
 
@@ -77,8 +91,9 @@ public class TicketService {
         return ticketRepository.findAll();
     }
 
-    public Ticket getTicketById(Long id) {
-        return ticketRepository.findById(id).orElseThrow(() -> new RuntimeException("Ticket not found"));
+
+    public Ticket getTicketByUserId(Long id) {
+        return (Ticket) ticketRepository.findByUserId(id);
     }
 
     @Transactional
@@ -123,5 +138,23 @@ public class TicketService {
     @Transactional
     public void deleteTicket(Long id) {
         ticketRepository.deleteById(id);
+    }
+    public List<Ticket> getTicketsByAgent(Optional<SupportAgent> agent) {
+        return ticketRepository.findByAssignedTo(agent);
+    }
+
+    public Ticket findTicketByTitle(String title) {
+        return ticketRepository.findByTitle(title);
+    }
+
+    public Ticket updateTicketStatus(Long ticketId, Ticket.Status newStatus) throws Exception {
+        Optional<Ticket> ticketOptional = ticketRepository.findById(ticketId);
+        if (ticketOptional.isPresent()) {
+            Ticket ticket = ticketOptional.get();
+            ticket.setStatus(newStatus); // Assuming your Ticket entity has a `setStatus` method
+            return ticketRepository.save(ticket);
+        } else {
+            throw new Exception("Ticket not found");
+        }
     }
 }

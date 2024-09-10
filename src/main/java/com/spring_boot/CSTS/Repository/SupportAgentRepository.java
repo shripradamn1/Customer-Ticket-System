@@ -8,8 +8,11 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 //@Repository
 public interface SupportAgentRepository extends JpaRepository<SupportAgent, Long> {
+    Optional<SupportAgent> findByUsername(String username);
 //    @Transactional
 //    @Modifying
 //    @Query(value = "ALTER TABLE your_table AUTO_INCREMENT = 1", nativeQuery = true)

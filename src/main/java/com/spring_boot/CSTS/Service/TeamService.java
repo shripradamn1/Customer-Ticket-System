@@ -35,6 +35,9 @@ public class TeamService {
                 })
                 .orElseThrow(() -> new RuntimeException("Team not found"));
     }
+    public List<Team> getTeamsByCategory(Long categoryId) {
+        return teamRepository.findByCategoryId(categoryId);
+    }
 
     public void deleteTeam(Long id) {
         teamRepository.deleteById(id);
