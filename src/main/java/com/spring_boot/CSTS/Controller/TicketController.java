@@ -47,7 +47,7 @@ public class   TicketController {
     public List<TicketsForTitle> getTicketsByUserId(@PathVariable Long userId) {
         List<Ticket> tickets = ticketRepository.findByUserId(userId);
         return tickets.stream()
-                .map(ticket -> new TicketsForTitle(ticket.getId(), ticket.getTitle(), ticket.getStatus()))
+                .map(ticket -> new TicketsForTitle(ticket.getId(), ticket.getTitle(), ticket.getStatus(),ticket.getCreatedAt()))
                 .collect(Collectors.toList());
     }
 
@@ -60,7 +60,6 @@ public class   TicketController {
     }
 
 
-
     @DeleteMapping("/delete/{ticketId}")
     public ResponseEntity<?> deleteTicket(@PathVariable Long ticketId) {
         ticketService.deleteTicket(ticketId);
@@ -69,7 +68,8 @@ public class   TicketController {
 
     @GetMapping("/agent/{username}")
     public ResponseEntity<List<TicketsForAgents>> getTicketsByAgent(@PathVariable String username) {
-        System.out.println("Received agent username: " + username); // Log the received agentId
+        System.out.println("Received agent username: " + username);
+
         Optional<SupportAgent> agentOptional = agentService.getAgentById(username);
         if (agentOptional.isEmpty()) {
             System.out.println("Agent not found");
@@ -78,20 +78,18 @@ public class   TicketController {
 
         SupportAgent agent = agentOptional.get();
         List<Ticket> tickets = ticketService.getTicketsByAgent(Optional.of(agent));
-        System.out.println("Retrieved tickets: " + tickets); // Log retrieved tickets
 
-        // Map the tickets to TicketsForAgents
         List<TicketsForAgents> agentTickets = tickets.stream()
-                .map(ticket -> new TicketsForAgents(ticket.getId(), ticket.getTitle()))
+                .map(ticket -> new TicketsForAgents(ticket.getId(), ticket.getTitle(), ticket.getStatus(), ticket.getPriority())) // Ensure priority is mapped here
                 .collect(Collectors.toList());
 
-        return ResponseEntity.ok(agentTickets); // Return the tickets wrapped in ResponseEntity
+        return ResponseEntity.ok(agentTickets);
     }
+//
+
     @GetMapping("title/{title}")
     public ResponseEntity<?> getTicketByTitle(@PathVariable String title){
-
             Ticket ticket = ticketService.findTicketByTitle(title);
-
         TicketsForTitle ticketsForTitle=new TicketsForTitle();
         ticketsForTitle.setId(ticket.getId());
         ticketsForTitle.setTitle(ticket.getTitle());
@@ -105,10 +103,10 @@ public class   TicketController {
             }
 
     }
-    @PutMapping("/{ticketId}/status")
-    public ResponseEntity<?> updateTicketStatus(@PathVariable Long ticketId, @RequestParam Ticket.Status status) {
+    @PutMapping("/{ticketId}/status/{status}/priority/{priority}")
+    public ResponseEntity<?> updateTicketStatus(@PathVariable Long ticketId, @PathVariable Ticket.Status status ,@PathVariable Ticket.Priority priority) {
         try {
-            Ticket ticket = ticketService.updateTicketStatus(ticketId, status);
+            Ticket ticket = ticketService.updateTicketStatus(ticketId, status,priority);
             return ResponseEntity.ok(ticket);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to update status");

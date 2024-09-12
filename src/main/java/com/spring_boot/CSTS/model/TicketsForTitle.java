@@ -1,15 +1,19 @@
 package com.spring_boot.CSTS.model;
 
+import java.time.LocalDateTime;
+
 public class TicketsForTitle {
     private Long id;
     private String title;
     private String description;
     private Ticket.Status status;
+      	private LocalDateTime createdAt = LocalDateTime.now();
 
-    public TicketsForTitle(Long id, String title, Ticket.Status status) {
+    public TicketsForTitle(Long id, String title, Ticket.Status status,LocalDateTime createdAt) {
         this.id=id;
         this.title=title;
         this.status=status;
+        this.createdAt=createdAt;
     }
     public TicketsForTitle(){
 

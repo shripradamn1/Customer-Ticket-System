@@ -44,7 +44,13 @@ public class Ticket {
 	private LocalDateTime updatedAt = LocalDateTime.now();
 
 
+	public LocalDateTime getCreatedAt() {
+		return createdAt;
+	}
 
+	public void setCreatedAt(LocalDateTime createdAt) {
+		this.createdAt = createdAt;
+	}
 
 	public Team getTeam() {
 		return new Team();
@@ -61,6 +67,9 @@ public class Ticket {
 
 	public enum Priority {
 		LOW, MEDIUM, HIGH}
+	public void setPriority(Priority priority){
+		this.priority=priority;
+	}
 
 	public void setTitle(String title) {
 		this.title =
@@ -120,4 +129,7 @@ public class Ticket {
 		return status;
 	}
 
+	public Priority getPriority() {
+		return priority;
+	}
 }
