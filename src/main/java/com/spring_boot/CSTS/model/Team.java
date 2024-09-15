@@ -21,12 +21,10 @@ public class Team {
     private Category category;
 
     @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore
   //  @JsonIgnore // Prevents infinite recursion
     private Set<Ticket> tickets = new HashSet<>();
 
     @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore
     private Set<SupportAgent> agents = new HashSet<>();
 
 //    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, orphanRemoval = true)
