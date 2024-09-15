@@ -144,10 +144,24 @@ public class TicketService {
 
         return savedTicket;
     }
+
+    // @Transactional
+    // public void deleteTicket(Long id) {
+    //     ticketRepository.deleteById(id);
+    // }
+    public List<Ticket> getTicketsByAgent(Optional<SupportAgent> agent) {
+        return ticketRepository.findByAssignedTo(agent);
+    }
+
+    // public Ticket findTicketByTitle(String title) {
+    //     return ticketRepository.findByTitle(title);
+    // }
+
     public Ticket updateTicketStatus(Long ticketId, Ticket.Status newStatus) throws Exception {
         Optional<Ticket> ticketOptional = ticketRepository.findById(ticketId);
         if (ticketOptional.isPresent()) {
             Ticket ticket = ticketOptional.get();
+            ticket.setPriority(newPriority);
             ticket.setStatus(newStatus); // Assuming your Ticket entity has a `setStatus` method
             return ticketRepository.save(ticket);
         } else {
