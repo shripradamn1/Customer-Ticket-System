@@ -15,7 +15,7 @@ import com.spring_boot.CSTS.Service.EmailService;
 
 	    @GetMapping("/sendEmail")
 	    public String sendEmail(@RequestParam String to, @RequestParam String subject, @RequestParam String text) {
-	        emailService.sendEmail(to, subject, text);
+	        emailService.sendEmail(to, subject, text, false);
 	        return "Email sent successfully!";
 	    }
 }

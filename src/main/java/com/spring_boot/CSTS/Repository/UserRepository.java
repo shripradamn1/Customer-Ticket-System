@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
-//@Repository
+@Repository
 public interface UserRepository extends JpaRepository<User, Long> {
     @Modifying
     @Transactional
@@ -22,7 +22,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
     public Optional<User> findByEmail(String email);
 
     public Optional<User> findByUsername(String username);
-
-
-	Optional<Team> findById(User createdBy);
+    Optional<Team> findById(User createdBy);
 }

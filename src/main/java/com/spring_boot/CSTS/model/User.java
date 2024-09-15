@@ -56,33 +56,6 @@ public class User implements UserDetails {
 		return password;
 	}
 
-	@Override
-	public String getUsername() {
-		return username;
-	}
-
-	@Override
-	public boolean isAccountNonExpired() {
-		return true;
-	}
-
-	@Override
-	public boolean isAccountNonLocked() {
-		return true;
-	}
-
-	@Override
-	public boolean isCredentialsNonExpired() {
-		return true;
-	}
-
-	@Override
-	public boolean isEnabled() {
-		return true;
-	}
-
-	
-
 	public Integer getId() {
 		return id;
 	}
@@ -107,14 +80,6 @@ public class User implements UserDetails {
 		this.role = role;
 	}
 
-	public Timestamp getCreatedAt() {
-		return createdAt;
-	}
-
-	public void setCreatedAt(Timestamp createdAt) {
-		this.createdAt = createdAt;
-	}
-
 	public void setUsername(String username) {
 		this.username = username;
 	}
@@ -122,6 +87,50 @@ public class User implements UserDetails {
 	public void setPassword(String password) {
 		this.password = password;
 	}
+
+	@Override
+	public String getUsername() {
+		return username;
+	}
+
+	@Override
+	public boolean isAccountNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isAccountNonLocked() {
+		return true;
+	}
+
+	@Override
+	public boolean isCredentialsNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isEnabled() {
+		return true;
+	}
+	//@Override
+//	public Set<Ticket> getAssignedTickets()
+//	{
+//		return assignedTickets;
+//	}
+//	//@Override
+//	public Team getTeam() {
+//		return team;
+//	}
+//	//@Override
+//
+//	public void setTeam(Team team) {
+//		this.team = team;
+//	}
+//
+//	public void setAssignedTickets(Set<Ticket> assignedTickets) {
+//		this.assignedTickets = assignedTickets;
+//	}
+
 
 	@Override
 	public java.util.Collection<? extends GrantedAuthority> getAuthorities() {

@@ -1,14 +1,7 @@
 package com.spring_boot.CSTS.Service;
 
 import com.spring_boot.CSTS.Repository.*;
-import com.spring_boot.CSTS.model.Ticket;
-import com.spring_boot.CSTS.model.TicketLog;
-import com.spring_boot.CSTS.Repository.SupportAgentRepository;
-import com.spring_boot.CSTS.Repository.TeamRepository;
-import com.spring_boot.CSTS.model.Category;
-import com.spring_boot.CSTS.model.SupportAgent;
-import com.spring_boot.CSTS.model.Team;
-import com.spring_boot.CSTS.model.User;
+import com.spring_boot.CSTS.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -21,39 +14,40 @@ public class TicketService {
 
     @Autowired
     private TicketRepository ticketRepository;
+
     @Autowired
     private CategoryRepository categoryRepository;
+
     @Autowired
     private TeamRepository teamRepository;
 
     @Autowired
     private SupportAgentRepository supportAgentRepository;
 
-    @Autowired
-    private TicketLogService ticketLogService;
+//    @Autowired
+//    private TicketLogService ticketLogService;
 
     @Autowired
-    private EmailService emailService;  
+    private EmailService emailService;
 
     @Autowired
     private UserRepository userRepository;
 
-        // Fetch the logged-in user's username
-        String loggedInUsername = SecurityContextHolder.getContext().getAuthentication().getName();
-        
-        // Fetch the full user details from the database
-        User loggedInUser = userRepository.findByUsername(loggedInUsername)
-            .orElseThrow(() -> new RuntimeException("Logged-in user not found"));
-
-    public Ticket createTicket(Long userId,Long categoryId,Long teamId,Ticket ticket) {
-        if(categoryId==null)
-            throw new IllegalArgumentException("categoryId must be given");
-
-        if (ticket.getTeam() == null || teamId == null) {
-            throw new IllegalArgumentException("Team must be provided for the ticket.");
+    @Transactional
+    public Ticket createTicket(Long userId, Long categoryId, Long teamId, Ticket ticket) {
+        // Validate category ID
+        if (categoryId == null) {
+            throw new IllegalArgumentException("categoryId must be provided");
         }
 
-        Category category=categoryRepository.findById(categoryId).orElseThrow(() -> new RuntimeException("category not found"));
+        // Fetch the logged-in user's username
+        String loggedInUsername = SecurityContextHolder.getContext().getAuthentication().getName();
+        User loggedInUser = userRepository.findByUsername(loggedInUsername)
+                .orElseThrow(() -> new RuntimeException("Logged-in user not found"));
+
+        // Fetch category, team, and agents
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new RuntimeException("Category not found"));
 
         Team team = teamRepository.findById(teamId)
                 .orElseThrow(() -> new RuntimeException("Team not found"));
@@ -68,21 +62,26 @@ public class TicketService {
         } else {
             throw new RuntimeException("No agents available in the team");
         }
-       // ticket.setCategory(ticket.getCategory());
-    ticket.setUserId(userId);
-       ticket.setCategory(category);
+
+        // Set ticket attributes
+        ticket.setUserId(userId);
+        ticket.setCategory(category);
         ticket.setTeam(team);
         ticket.setStatus(Ticket.Status.OPEN);
 
+        // Save the ticket
         Ticket savedTicket = ticketRepository.save(ticket);
 
-        // Send dynamic email notification for ticket creation
+        // Send dynamic HTML email notification
+     // When creating a ticket, add the agent name in the email.
+        String emailBody = emailService.buildTicketCreationEmail(
+            loggedInUser.getUsername(), savedTicket.getTitle(), savedTicket.getId(),
+            savedTicket.getDescription(), "http://supportsystem.com/ticket/" + savedTicket.getId(),
+            savedTicket.getAssignedTo().getName()
+        );
+
         String subject = "New Ticket Created: " + savedTicket.getTitle();
-        String body = "A new ticket has been created with the following details:\n" +
-                      "Ticket ID: " + savedTicket.getId() + "\n" +
-                      "Title: " + savedTicket.getTitle() + "\n" +
-                      "Assigned To: " + savedTicket.getAssignedTo().getName();
-        emailService.sendEmail(loggedInUser.getEmail(), subject, body);  // Send email to logged-in user
+        emailService.sendEmail(loggedInUser.getEmail(), subject, emailBody, true);
 
         return savedTicket;
     }
@@ -91,9 +90,21 @@ public class TicketService {
         return ticketRepository.findAll();
     }
 
-
     public Ticket getTicketByUserId(Long id) {
-        return (Ticket) ticketRepository.findByUserId(id);
+        List<Ticket> tickets = ticketRepository.findByUserId(id);
+        if (tickets.isEmpty()) {
+            throw new RuntimeException("Ticket not found");
+        }
+        return tickets.get(0); // Return the first ticket (or handle accordingly)
+    }
+
+
+    public Ticket findTicketByTitle(String title) {
+        return ticketRepository.findByTitle(title).orElseThrow(() -> new RuntimeException("Ticket not found"));
+    }
+
+    public List<Ticket> getTicketsByAgent(Optional<SupportAgent> agent) {
+        return ticketRepository.findByAssignedTo(agent);
     }
 
     @Transactional
@@ -101,53 +112,52 @@ public class TicketService {
         Ticket existingTicket = ticketRepository.findById(updatedTicket.getId())
                 .orElseThrow(() -> new RuntimeException("Ticket not found"));
 
-        // Fetch the logged-in user's username
         String loggedInUsername = SecurityContextHolder.getContext().getAuthentication().getName();
-        
-        // Fetch the full user details from the database
         User loggedInUser = userRepository.findByUsername(loggedInUsername)
-            .orElseThrow(() -> new RuntimeException("Logged-in user not found"));
+                .orElseThrow(() -> new RuntimeException("Logged-in user not found"));
 
-        // Capture changes and create a log
-        TicketLog log = new TicketLog();
-        log.setTicket(existingTicket);
-        
+//        TicketLog log = new TicketLog();
+//        log.setTicket(existingTicket);
 
-        if (!Objects.equals(existingTicket.getStatus(), updatedTicket.getStatus())) {
-            log.setMessage("Status changed from " + existingTicket.getStatus() + " to " + updatedTicket.getStatus());
-        } else if (!Objects.equals(existingTicket.getAssignedTo(), updatedTicket.getAssignedTo())) {
-            log.setMessage("Assigned agent changed from " + existingTicket.getAssignedTo().getName() + " to " + updatedTicket.getAssignedTo().getName());
-        }
+//        if (!Objects.equals(existingTicket.getStatus(), updatedTicket.getStatus())) {
+//            log.setMessage("Status changed from " + existingTicket.getStatus() + " to " + updatedTicket.getStatus());
+//        } else if (!Objects.equals(existingTicket.getAssignedTo(), updatedTicket.getAssignedTo())) {
+//            log.setMessage("Assigned agent changed from " + existingTicket.getAssignedTo().getName() + " to " + updatedTicket.getAssignedTo().getName());
+//        }
 
-        if (log.getMessage() != null) {
-            ticketLogService.addTicketLog(existingTicket.getId(), log);
-        }
+//        if (log.getMessage() != null) {
+//            ticketLogService.addTicketLog(existingTicket.getId(), log);
+//        }
 
         Ticket savedTicket = ticketRepository.save(updatedTicket);
 
-        // Send dynamic email notification for ticket update
+        // Send dynamic email notification
         String subject = "Ticket Updated: " + savedTicket.getTitle();
-        String body = "Ticket ID: " + savedTicket.getId() + " has been updated.\n" +
-                      "Updated Status: " + savedTicket.getStatus() + "\n" +
-                      "Assigned To: " + savedTicket.getAssignedTo().getName();
-        emailService.sendEmail(loggedInUser.getEmail(), subject, body);  // Send email to logged-in user
+     // Send email when the ticket status is updated
+        String emailBody = emailService.buildTicketStatusUpdateEmail(
+            loggedInUser.getUsername(), savedTicket.getId(), savedTicket.getTitle(),
+            savedTicket.getStatus().toString(), savedTicket.getAssignedTo().getName(),
+            "http://supportsystem.com/ticket/" + savedTicket.getId()
+        );
+        emailService.sendEmail(loggedInUser.getEmail(), subject, emailBody, true);
+
 
         return savedTicket;
     }
 
-    @Transactional
-    public void deleteTicket(Long id) {
-        ticketRepository.deleteById(id);
-    }
+    // @Transactional
+    // public void deleteTicket(Long id) {
+    //     ticketRepository.deleteById(id);
+    // }
     public List<Ticket> getTicketsByAgent(Optional<SupportAgent> agent) {
         return ticketRepository.findByAssignedTo(agent);
     }
 
-    public Ticket findTicketByTitle(String title) {
-        return ticketRepository.findByTitle(title);
-    }
+    // public Ticket findTicketByTitle(String title) {
+    //     return ticketRepository.findByTitle(title);
+    // }
 
-    public Ticket updateTicketStatus(Long ticketId, Ticket.Status newStatus,Ticket.Priority newPriority) throws Exception {
+    public Ticket updateTicketStatus(Long ticketId, Ticket.Status newStatus) throws Exception {
         Optional<Ticket> ticketOptional = ticketRepository.findById(ticketId);
         if (ticketOptional.isPresent()) {
             Ticket ticket = ticketOptional.get();
@@ -157,5 +167,10 @@ public class TicketService {
         } else {
             throw new Exception("Ticket not found");
         }
+    }
+    
+    @Transactional
+    public void deleteTicket(Long id) {
+        ticketRepository.deleteById(id);
     }
 }
