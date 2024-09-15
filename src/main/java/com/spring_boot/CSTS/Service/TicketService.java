@@ -147,10 +147,11 @@ public class TicketService {
         return ticketRepository.findByTitle(title);
     }
 
-    public Ticket updateTicketStatus(Long ticketId, Ticket.Status newStatus) throws Exception {
+    public Ticket updateTicketStatus(Long ticketId, Ticket.Status newStatus,Ticket.Priority newPriority) throws Exception {
         Optional<Ticket> ticketOptional = ticketRepository.findById(ticketId);
         if (ticketOptional.isPresent()) {
             Ticket ticket = ticketOptional.get();
+            ticket.setPriority(newPriority);
             ticket.setStatus(newStatus); // Assuming your Ticket entity has a `setStatus` method
             return ticketRepository.save(ticket);
         } else {
