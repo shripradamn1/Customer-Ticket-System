@@ -8,7 +8,7 @@ WORKDIR /app
 COPY target/telecom-service-provisioning-0.0.1-SNAPSHOT.jar /app/telcoservice.jar
  
 # Expose the port on which the Spring Boot app will run
-EXPOSE 8082
+EXPOSE 7000
  
 # Define the command to run the Spring Boot app
-ENTRYPOINT ["java", "-jar", "/app/telcoservice.jar"]
+ENTRYPOINT ["java", "-jar", "/app/customer.jar"]
