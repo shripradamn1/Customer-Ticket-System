@@ -5,10 +5,10 @@ FROM openjdk:17-jdk-alpine
 WORKDIR /app
  
 # Copy the Spring Boot app's JAR file into the container
-COPY target/telecom-service-provisioning-0.0.1-SNAPSHOT.jar /app/telcoservice.jar
+COPY target/CSMT-0.0.1-SNAPSHOT.jar /app/csts.jar
  
 # Expose the port on which the Spring Boot app will run
 EXPOSE 7000
  
 # Define the command to run the Spring Boot app
-ENTRYPOINT ["java", "-jar", "/app/customer.jar"]
+ENTRYPOINT ["java", "-jar", "/app/csts.jar"]
