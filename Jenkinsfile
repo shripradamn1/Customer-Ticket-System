@@ -10,31 +10,29 @@ pipeline {
                 ])
             }
         }
-        stage("Maven") {
+        stage('Maven') {
             steps {
                 bat '''
-                mvn install
+                mvn clean install
                 '''
             }
         }
-        stage("Pull Docker Image") {
+        stage('Pull Docker Image') {
             steps {
                 bat "docker pull alpine"
             }
         }
-        stage("Build Docker Image") {
+        stage('Build Docker Image') {
             steps {
                 script {
-                    try {
-                        bat "docker rmi -f csmt"
-                        bat "docker rm -f csmt"
-                        echo "Removed existing Docker image and building a new one and deleting the container of mysql"
-                    } catch(Exception e) {
-                        echo "Exception occurred: " + e.toString()
+                    catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                        bat "docker rmi -f csmt || echo 'No image to remove'"
+                        bat "docker rm -f csmt || echo 'No container to remove'"
+                        echo "Removed existing Docker image and container"
+                        bat "docker build -t csmt ."
                     }
                 }
             }
-        }
         }
     }
 }
