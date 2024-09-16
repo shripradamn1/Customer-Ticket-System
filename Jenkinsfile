@@ -1,56 +1,40 @@
 pipeline {
-    agent any // Use any available Jenkins agent
-
-    environment {
-        // Define environment variables
-        JAVA_HOME = tool name: 'Java 21', type: 'jdk' // Ensure this matches the OpenJDK configuration name in Jenkins
-        MAVEN_HOME = tool name: 'Maven 3.9.8', type: 'maven' // Ensure this matches the Maven configuration name in Jenkins
-    }
-
-    tools {
-        // Specify the Maven and OpenJDK versions to use
-        maven 'Maven 3.9.8' // Ensure this matches the Maven installation name in Jenkins
-        jdk 'Java 21' // Ensure this matches the OpenJDK installation name in Jenkins
-    }
-
+    agent any
     stages {
-        stage('Build') {
+        stage('Clone') {
             steps {
-                // Build the project using Maven
-                echo 'Build successful'
-                //bat 'mvn clean install'
+                checkout([
+                    $class: 'GitSCM',
+                    branches: [[name: '*/backend-code-latest-branch']],
+                    userRemoteConfigs: [[url: 'https://github.com/shripradamn1/Customer-Ticket-System.git']]
+                ])
             }
         }
-        
-        stage('Test') {
+        stage("Maven") {
             steps {
-                // Run tests using Maven
-                echo 'Test successful'
-                //bat 'mvn test'
+                bat '''
+                mvn install
+                '''
             }
         }
-        
-        stage('Package') {
+        stage("Pull Docker Image") {
             steps {
-                // Package the project using Maven
-                echo 'Success'
-                //bat 'mvn package'
+                bat "docker pull alpine"
             }
         }
-    }
-    
-    post {
-        success {
-            // Actions to perform on successful build
-            echo 'Build and tests succeeded!'
+        stage("Build Docker Image") {
+            steps {
+                script {
+                    try {
+                        bat "docker rmi -f csmt"
+                        bat "docker rm -f csmt"
+                        echo "Removed existing Docker image and building a new one and deleting the container of mysql"
+                    } catch(Exception e) {
+                        echo "Exception occurred: " + e.toString()
+                    }
+                }
+            }
         }
-        failure {
-            // Actions to perform on failed build
-            echo 'Build or tests failed.'
-        }
-        always {
-            // Actions to perform regardless of success or failure
-            echo 'Pipeline finished.'
         }
     }
 }
