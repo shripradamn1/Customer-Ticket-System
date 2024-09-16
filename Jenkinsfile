@@ -1,40 +1,48 @@
 pipeline {
     agent any
+    // environment {
+    //     PATH = "C:/Users/e039326/Downloads/Softwares/apache-maven-3.9.8-bin/apache-maven-3.9.8/bin;${env.PATH}"
+    // }
     stages {
-        stage('Clone') {
+        stage('1. Clone from github') {
             steps {
-                echo "Cloning repository..."
                 checkout([
                     $class: 'GitSCM',
                     branches: [[name: '*/backend-code-latest-branch']],
-                    userRemoteConfigs: [[url: 'https://github.com/shripradamn1/Customer-Ticket-System']]
+                    userRemoteConfigs: [[url: 'https://github.com/shripradamn1/Customer-Ticket-System.git']]
                 ])
             }
         }
-        stage('Maven Build') {
+        stage('2. List Files') {
             steps {
-                echo "Running Maven build..."
-                bat 'mvn clean install'
+                bat "dir"
             }
         }
-        stage('Pull Docker Image') {
+        stage("3. Maven clean compile") {
             steps {
-                echo "Pulling Docker image..."
-                bat "docker pull alpine"
+                bat "mvn clean compile"
             }
         }
-        stage('Build Docker Image') {
+        stage("4. Install the jar") {
             steps {
-                echo "Building Docker image..."
-                script {
-                    catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-                        bat "docker rmi -f csmt || echo 'No image to remove'"
-                        bat "docker rm -f csmt || echo 'No container to remove'"
-                        echo "Removed existing Docker image and container"
-                        bat "docker build -t csmt ."
-                    }
-                }
+                bat "mvn install"
             }
         }
+        stage("5. Run the tests") {
+            steps {
+                bat "mvn test"
+            }
+        }
+        stage("6. Build the docker image") {
+            steps {
+                bat "docker build -t telcoservice ."
+            }
+        }
+        stage("7. Run the docker compose") {
+            steps {
+                bat "docker compose up -d"
+            }
+        }
+
     }
 }
