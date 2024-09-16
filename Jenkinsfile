@@ -7,7 +7,7 @@ pipeline {
                 checkout([
                     $class: 'GitSCM',
                     branches: [[name: '*/backend-code-latest-branch']],
-                    userRemoteConfigs: [[url: 'https://github.com/shripradamn1/Customer-Ticket-System.git']]
+                    userRemoteConfigs: [[url: 'https://github.com/shripradamn1/Customer-Ticket-System']]
                 ])
             }
         }
