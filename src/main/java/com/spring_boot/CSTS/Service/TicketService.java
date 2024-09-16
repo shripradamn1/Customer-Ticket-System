@@ -24,9 +24,6 @@ public class TicketService {
     @Autowired
     private SupportAgentRepository supportAgentRepository;
 
-//    @Autowired
-//    private TicketLogService ticketLogService;
-
     @Autowired
     private EmailService emailService;
 
@@ -73,7 +70,6 @@ public class TicketService {
         Ticket savedTicket = ticketRepository.save(ticket);
 
         // Send dynamic HTML email notification
-     // When creating a ticket, add the agent name in the email.
         String emailBody = emailService.buildTicketCreationEmail(
             loggedInUser.getUsername(), savedTicket.getTitle(), savedTicket.getId(),
             savedTicket.getDescription(), "http://supportsystem.com/ticket/" + savedTicket.getId(),
@@ -98,9 +94,8 @@ public class TicketService {
         return tickets.get(0); // Return the first ticket (or handle accordingly)
     }
 
-
     public Ticket findTicketByTitle(String title) {
-        return ticketRepository.findByTitle(title).orElseThrow(() -> new RuntimeException("Ticket not found"));
+        return ticketRepository.findByTitle(title);
     }
 
     public List<Ticket> getTicketsByAgent(Optional<SupportAgent> agent) {
@@ -116,24 +111,10 @@ public class TicketService {
         User loggedInUser = userRepository.findByUsername(loggedInUsername)
                 .orElseThrow(() -> new RuntimeException("Logged-in user not found"));
 
-//        TicketLog log = new TicketLog();
-//        log.setTicket(existingTicket);
-
-//        if (!Objects.equals(existingTicket.getStatus(), updatedTicket.getStatus())) {
-//            log.setMessage("Status changed from " + existingTicket.getStatus() + " to " + updatedTicket.getStatus());
-//        } else if (!Objects.equals(existingTicket.getAssignedTo(), updatedTicket.getAssignedTo())) {
-//            log.setMessage("Assigned agent changed from " + existingTicket.getAssignedTo().getName() + " to " + updatedTicket.getAssignedTo().getName());
-//        }
-
-//        if (log.getMessage() != null) {
-//            ticketLogService.addTicketLog(existingTicket.getId(), log);
-//        }
-
         Ticket savedTicket = ticketRepository.save(updatedTicket);
 
-        // Send dynamic email notification
+        // Send dynamic email notification for updates
         String subject = "Ticket Updated: " + savedTicket.getTitle();
-     // Send email when the ticket status is updated
         String emailBody = emailService.buildTicketStatusUpdateEmail(
             loggedInUser.getUsername(), savedTicket.getId(), savedTicket.getTitle(),
             savedTicket.getStatus().toString(), savedTicket.getAssignedTo().getName(),
@@ -141,34 +122,21 @@ public class TicketService {
         );
         emailService.sendEmail(loggedInUser.getEmail(), subject, emailBody, true);
 
-
         return savedTicket;
     }
 
-    // @Transactional
-    // public void deleteTicket(Long id) {
-    //     ticketRepository.deleteById(id);
-    // }
-    public List<Ticket> getTicketsByAgent(Optional<SupportAgent> agent) {
-        return ticketRepository.findByAssignedTo(agent);
-    }
-
-    // public Ticket findTicketByTitle(String title) {
-    //     return ticketRepository.findByTitle(title);
-    // }
-
-    public Ticket updateTicketStatus(Long ticketId, Ticket.Status newStatus) throws Exception {
+    public Ticket updateTicketStatus(Long ticketId, Ticket.Status newStatus, Ticket.Priority newPriority) throws Exception {
         Optional<Ticket> ticketOptional = ticketRepository.findById(ticketId);
         if (ticketOptional.isPresent()) {
             Ticket ticket = ticketOptional.get();
-            ticket.setPriority(newPriority);
-            ticket.setStatus(newStatus); // Assuming your Ticket entity has a `setStatus` method
+            ticket.setPriority(newPriority); // Set priority if updated
+            ticket.setStatus(newStatus); // Set status
             return ticketRepository.save(ticket);
         } else {
             throw new Exception("Ticket not found");
         }
     }
-    
+
     @Transactional
     public void deleteTicket(Long id) {
         ticketRepository.deleteById(id);
