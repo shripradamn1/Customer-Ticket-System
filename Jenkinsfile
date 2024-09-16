@@ -3,6 +3,7 @@ pipeline {
     stages {
         stage('Clone') {
             steps {
+                echo "Cloning repository..."
                 checkout([
                     $class: 'GitSCM',
                     branches: [[name: '*/backend-code-latest-branch']],
@@ -10,20 +11,21 @@ pipeline {
                 ])
             }
         }
-        stage('Maven') {
+        stage('Maven Build') {
             steps {
-                bat '''
-                mvn clean install
-                '''
+                echo "Running Maven build..."
+                bat 'mvn clean install'
             }
         }
         stage('Pull Docker Image') {
             steps {
+                echo "Pulling Docker image..."
                 bat "docker pull alpine"
             }
         }
         stage('Build Docker Image') {
             steps {
+                echo "Building Docker image..."
                 script {
                     catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
                         bat "docker rmi -f csmt || echo 'No image to remove'"
