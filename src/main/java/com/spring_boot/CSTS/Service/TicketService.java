@@ -6,7 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
 @Service
@@ -31,7 +34,13 @@ public class TicketService {
     private UserRepository userRepository;
 
     @Transactional
-    public Ticket createTicket(Long userId, Long categoryId, Long teamId, Ticket ticket) {
+    public Ticket createTicket(Long userId, Long categoryId, Long teamId, Ticket ticket,MultipartFile file) throws IOException {
+
+        if (file != null && !file.isEmpty()) {
+            String filePath = saveFile(file);  // Save file
+            ticket.setAttachment("C:\\Users\\e031760\\Desktop\\CaseStudy\\attachments");    // Add file path to the ticket
+        }
+
         // Validate category ID
         if (categoryId == null) {
             throw new IllegalArgumentException("categoryId must be provided");
@@ -82,6 +91,21 @@ public class TicketService {
         return savedTicket;
     }
 
+    private String saveFile(MultipartFile file) throws IOException {
+        String fileName = file.getOriginalFilename();
+        String filePath = "C:/Users/e031760/Desktop/CaseStudy/attachments/" + fileName;
+    
+        File dest = new File(filePath);
+        
+        // Create the directory if it doesn't exist
+        if (!dest.getParentFile().exists()) {
+            dest.getParentFile().mkdirs();
+        }
+    
+        file.transferTo(dest);  // Transfer the file to the destination
+        return filePath;
+    }
+    
     public List<Ticket> getAllTickets() {
         return ticketRepository.findAll();
     }
