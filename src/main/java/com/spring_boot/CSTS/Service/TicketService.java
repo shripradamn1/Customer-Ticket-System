@@ -126,40 +126,79 @@ public class TicketService {
         return ticketRepository.findByAssignedTo(agent);
     }
 
-    @Transactional
-    public Ticket updateTicket(Ticket updatedTicket) {
-        Ticket existingTicket = ticketRepository.findById(updatedTicket.getId())
-                .orElseThrow(() -> new RuntimeException("Ticket not found"));
+    // @Transactional
+    // public Ticket updateTicket(Ticket updatedTicket) {
+    //     Ticket existingTicket = ticketRepository.findById(updatedTicket.getId())
+    //             .orElseThrow(() -> new RuntimeException("Ticket not found"));
 
+    //     String loggedInUsername = SecurityContextHolder.getContext().getAuthentication().getName();
+    //     User loggedInUser = userRepository.findByUsername(loggedInUsername)
+    //             .orElseThrow(() -> new RuntimeException("Logged-in user not found"));
+
+    //     Ticket savedTicket = ticketRepository.save(updatedTicket);
+
+    //     // Send dynamic email notification for updates
+    //     String subject = "Ticket Updated: " + savedTicket.getTitle();
+    //     String emailBody = emailService.buildTicketStatusUpdateEmail(
+    //         loggedInUser.getUsername(), savedTicket.getId(), savedTicket.getTitle(),
+    //         savedTicket.getStatus().toString(), savedTicket.getAssignedTo().getName(),
+    //         "http://supportsystem.com/ticket/" + savedTicket.getId()
+    //     );
+    //     emailService.sendEmail(loggedInUser.getEmail(), subject, emailBody, true);
+
+    //     return savedTicket;
+    // }
+
+    // public Ticket updateTicketStatus(Long ticketId, Ticket.Status newStatus, Ticket.Priority newPriority) throws Exception {
+    //     Optional<Ticket> ticketOptional = ticketRepository.findById(ticketId);
+    //     if (ticketOptional.isPresent()) {
+    //         Ticket ticket = ticketOptional.get();
+    //         ticket.setPriority(newPriority); // Set priority if updated
+    //         ticket.setStatus(newStatus); // Set status
+    //         return ticketRepository.save(ticket);
+            
+    //     } else {
+    //         throw new Exception("Ticket not found");
+    //     }
+    // }
+
+    @Transactional
+    public Ticket updateTicketStatus(Long ticketId, Ticket.Status newStatus, Ticket.Priority newPriority) throws Exception {
+    Optional<Ticket> ticketOptional = ticketRepository.findById(ticketId);
+
+    if (ticketOptional.isPresent()) {
+        Ticket ticket = ticketOptional.get();
+        Ticket.Status oldStatus = ticket.getStatus(); // Track old status
+        Ticket.Priority oldPriority = ticket.getPriority(); // Track old priority
+
+        // Update ticket status and priority
+        ticket.setStatus(newStatus);
+        ticket.setPriority(newPriority);
+
+        Ticket savedTicket = ticketRepository.save(ticket);
+
+        // Send dynamic email notification for status or priority updates
         String loggedInUsername = SecurityContextHolder.getContext().getAuthentication().getName();
         User loggedInUser = userRepository.findByUsername(loggedInUsername)
                 .orElseThrow(() -> new RuntimeException("Logged-in user not found"));
 
-        Ticket savedTicket = ticketRepository.save(updatedTicket);
-
-        // Send dynamic email notification for updates
         String subject = "Ticket Updated: " + savedTicket.getTitle();
         String emailBody = emailService.buildTicketStatusUpdateEmail(
-            loggedInUser.getUsername(), savedTicket.getId(), savedTicket.getTitle(),
-            savedTicket.getStatus().toString(), savedTicket.getAssignedTo().getName(),
-            "http://supportsystem.com/ticket/" + savedTicket.getId()
+                loggedInUser.getUsername(), savedTicket.getId(), savedTicket.getTitle(),
+                oldStatus.toString(), newStatus.toString(),
+                oldPriority.toString(), newPriority.toString(),
+                savedTicket.getAssignedTo().getName(),
+                "http://supportsystem.com/ticket/" + savedTicket.getId()
         );
+
         emailService.sendEmail(loggedInUser.getEmail(), subject, emailBody, true);
 
         return savedTicket;
+    } else {
+        throw new Exception("Ticket not found");
     }
+}
 
-    public Ticket updateTicketStatus(Long ticketId, Ticket.Status newStatus, Ticket.Priority newPriority) throws Exception {
-        Optional<Ticket> ticketOptional = ticketRepository.findById(ticketId);
-        if (ticketOptional.isPresent()) {
-            Ticket ticket = ticketOptional.get();
-            ticket.setPriority(newPriority); // Set priority if updated
-            ticket.setStatus(newStatus); // Set status
-            return ticketRepository.save(ticket);
-        } else {
-            throw new Exception("Ticket not found");
-        }
-    }
 
     @Transactional
     public void deleteTicket(Long id) {

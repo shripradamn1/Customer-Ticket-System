@@ -108,7 +108,7 @@ public class EmailService {
         </div>
 
         <div class="footer">
-            Awesome Support Public Test © 2024. We’re here to help you!
+            Awesome Support © 2024. We’re here to help you!
         </div>
     </div>
 </body>
@@ -118,88 +118,94 @@ public class EmailService {
 
     // Method to build the HTML email content for ticket status updates
     public String buildTicketStatusUpdateEmail(String userName, Long ticketId, String ticketTitle, 
-                                               String newStatus, String supportAgentName, String ticketLink) {
-        return String.format("""
-           <!DOCTYPE html>
+    String oldStatus, String newStatus,
+    String oldPriority, String newPriority,
+    String supportAgentName, String ticketLink) {
+return String.format("""
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ticket Status Updated</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 20px;
-        }
-        .email-container {
-            background-color: #ffffff;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            max-width: 600px;
-            margin: 0 auto;
-        }
-        .header {
-            background-color: #4c9fd4;
-            padding: 20px;
-            text-align: center;
-            color: white;
-            font-size: 24px;
-            font-weight: bold;
-        }
-        .content {
-            padding: 20px;
-        }
-        .ticket-info {
-            margin: 20px 0;
-            padding: 15px;
-            background-color: #f9f9f9;
-            border-left: 4px solid #4c9fd4;
-        }
-        .btn {
-            display: inline-block;
-            background-color: #4c9fd4;
-            color: white;
-            padding: 10px 20px;
-            text-decoration: none;
-            border-radius: 5px;
-            font-weight: bold;
-        }
-        .btn:hover {
-            background-color: #3b8ab0;
-        }
-        .footer {
-            padding: 20px;
-            text-align: center;
-            font-size: 12px;
-            color: #777;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ticket Status Updated</title>
+<style>
+body {
+font-family: Arial, sans-serif;
+background-color: #f4f4f4;
+margin: 0;
+padding: 20px;
+}
+.email-container {
+background-color: #ffffff;
+border-radius: 8px;
+overflow: hidden;
+box-shadow: 0 0 10px rgba(0,0,0,0.1);
+max-width: 600px;
+margin: 0 auto;
+}
+.header {
+background-color: #4c9fd4;
+padding: 20px;
+text-align: center;
+color: white;
+font-size: 24px;
+font-weight: bold;
+}
+.content {
+padding: 20px;
+}
+.ticket-info {
+margin: 20px 0;
+padding: 15px;
+background-color: #f9f9f9;
+border-left: 4px solid #4c9fd4;
+}
+.btn {
+display: inline-block;
+background-color: #4c9fd4;
+color: white;
+padding: 10px 20px;
+text-decoration: none;
+border-radius: 5px;
+font-weight: bold;
+}
+.btn:hover {
+background-color: #3b8ab0;
+}
+.footer {
+padding: 20px;
+text-align: center;
+font-size: 12px;
+color: #777;
+}
+</style>
 </head>
 <body>
-    <div class="email-container">
-        <div class="header">
-            Your Ticket Status Has Been Updated!
-        </div>
+<div class="email-container">
+<div class="header">
+Your Ticket Status Has Been Updated!
+</div>
 
-        <div class="content">
-            <p>Hello %s,</p>
-            <p>Your ticket <strong>#%d</strong> titled "<strong>%s</strong>" has been updated.</p>
-            <p>New status: <strong>%s</strong></p>
-            <p>Assigned agent: <strong>%s</strong></p>
-            <p>To check the status of your ticket or add more information, please click the button below:</p>
-            <a href="%s" class="btn">View Ticket</a>
-        </div>
+<div class="content">
+<p>Hello %s,</p>
+<p>Your ticket <strong>#%d</strong> titled "<strong>%s</strong>" has been updated.</p>
+<p>Previous status: <strong>%s</strong></p>
+<p>New status: <strong>%s</strong></p>
+<p>Previous priority: <strong>%s</strong></p>
+<p>New priority: <strong>%s</strong></p>
+<p>Assigned agent: <strong>%s</strong></p>
+<p>To check the status of your ticket or add more information, please click the button below:</p>
+<a href="%s" class="btn">View Ticket</a>
+</div>
 
-        <div class="footer">
-            Awesome Support Public Test © 2024. We’re here to help you!
-        </div>
-    </div>
+<div class="footer">
+Awesome Support © 2024. We’re here to help you!
+</div>
+</div>
 </body>
 </html>
-        """, userName, ticketId, ticketTitle, newStatus, supportAgentName, ticketLink);
-    }
+""", userName, ticketId, ticketTitle, oldStatus, newStatus, oldPriority, newPriority, supportAgentName, ticketLink);
+}
+
 }
