@@ -208,4 +208,75 @@ Awesome Support © 2024. We’re here to help you!
 """, userName, ticketId, ticketTitle, oldStatus, newStatus, oldPriority, newPriority, supportAgentName, ticketLink);
 }
 
+public String buildTicketResolvedEmail(String userName, Long ticketId, String ticketTitle, 
+String supportAgentName, String feedbackLink) {
+return String.format("""
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ticket Resolved</title>
+<style>
+body {
+font-family: Arial, sans-serif;
+background-color: #f4f4f4;
+margin: 0;
+padding: 20px;
 }
+.email-container {
+background-color: #ffffff;
+border-radius: 8px;
+overflow: hidden;
+box-shadow: 0 0 10px rgba(0,0,0,0.1);
+max-width: 600px;
+margin: 0 auto;
+}
+.header {
+background-color: #4c9fd4;
+padding: 20px;
+text-align: center;
+color: white;
+font-size: 24px;
+font-weight: bold;
+}
+.content {
+padding: 20px;
+}
+.footer {
+padding: 20px;
+text-align: center;
+font-size: 12px;
+color: #777;
+}
+</style>
+</head>
+<body>
+<div class="email-container">
+<div class="header">
+Your Ticket Has Been Resolved!
+</div>
+
+<div class="content">
+<p>Hello %s,</p>
+<p>Your ticket <strong>#%d</strong> titled "<strong>%s</strong>" has been resolved.</p>
+<p>Assigned agent: <strong>%s</strong></p>
+<p>We would appreciate your feedback on the resolution of this issue.</p>
+<p>To leave your feedback, please click the button below:</p>
+<a href="%s" class="btn">Give Feedback</a>
+</div>
+
+<div class="footer">
+Awesome Support Public Test © 2024. We’re here to help you!
+</div>
+</div>
+</body>
+</html>
+""", userName, ticketId, ticketTitle, supportAgentName, feedbackLink);
+}
+
+}
+
+
+

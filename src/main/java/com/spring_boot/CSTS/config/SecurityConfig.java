@@ -33,6 +33,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/signup/**", "/login", "/checkLoggedInUser").permitAll()
                         .requestMatchers("/api/tickets/**").permitAll()// Updated
+                        .requestMatchers("/feedback/**").permitAll()
                         .requestMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
                         .requestMatchers("/user/**").hasAuthority("ROLE_USER")
                         .anyRequest().authenticated())

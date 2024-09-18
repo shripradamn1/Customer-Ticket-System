@@ -162,41 +162,65 @@ public class TicketService {
     //     }
     // }
 
-    @Transactional
-    public Ticket updateTicketStatus(Long ticketId, Ticket.Status newStatus, Ticket.Priority newPriority) throws Exception {
+
+@Transactional
+public Ticket updateTicketStatus(Long ticketId, Ticket.Status newStatus, Ticket.Priority newPriority) throws Exception {
     Optional<Ticket> ticketOptional = ticketRepository.findById(ticketId);
 
     if (ticketOptional.isPresent()) {
         Ticket ticket = ticketOptional.get();
-        Ticket.Status oldStatus = ticket.getStatus(); // Track old status
-        Ticket.Priority oldPriority = ticket.getPriority(); // Track old priority
+        Ticket.Status oldStatus = ticket.getStatus();
+        Ticket.Priority oldPriority = ticket.getPriority();
 
-        // Update ticket status and priority
         ticket.setStatus(newStatus);
         ticket.setPriority(newPriority);
 
         Ticket savedTicket = ticketRepository.save(ticket);
 
-        // Send dynamic email notification for status or priority updates
         String loggedInUsername = SecurityContextHolder.getContext().getAuthentication().getName();
         User loggedInUser = userRepository.findByUsername(loggedInUsername)
                 .orElseThrow(() -> new RuntimeException("Logged-in user not found"));
 
-        String subject = "Ticket Updated: " + savedTicket.getTitle();
-        String emailBody = emailService.buildTicketStatusUpdateEmail(
-                loggedInUser.getUsername(), savedTicket.getId(), savedTicket.getTitle(),
-                oldStatus.toString(), newStatus.toString(),
-                oldPriority.toString(), newPriority.toString(),
-                savedTicket.getAssignedTo().getName(),
-                "http://supportsystem.com/ticket/" + savedTicket.getId()
-        );
-
-        emailService.sendEmail(loggedInUser.getEmail(), subject, emailBody, true);
+        // If the ticket is resolved, send a feedback email with a dynamic link
+        if (newStatus == Ticket.Status.RESOLVED) {
+            String feedbackLink = "http://localhost:3000/feedback/" + savedTicket.getId(); // React frontend link
+            String subject = "Ticket Resolved: " + savedTicket.getTitle();
+            String emailBody = emailService.buildTicketResolvedEmail(
+                    loggedInUser.getUsername(),
+                    savedTicket.getId(),
+                    savedTicket.getTitle(),
+                    savedTicket.getAssignedTo().getName(),
+                    feedbackLink
+            );
+            emailService.sendEmail(loggedInUser.getEmail(), subject, emailBody, true);
+        } else {
+            // Send a regular update email if not resolved
+            sendTicketUpdateEmail(loggedInUser, savedTicket, oldStatus, newStatus, oldPriority, newPriority);
+        }
 
         return savedTicket;
     } else {
         throw new Exception("Ticket not found");
     }
+}
+
+
+
+// Send email when ticket is updated
+private void sendTicketUpdateEmail(User loggedInUser, Ticket savedTicket, Ticket.Status oldStatus, Ticket.Status newStatus, Ticket.Priority oldPriority, Ticket.Priority newPriority) {
+    String subject = "Ticket Updated: " + savedTicket.getTitle();
+    String emailBody = emailService.buildTicketStatusUpdateEmail(
+            loggedInUser.getUsername(),
+            savedTicket.getId(),
+            savedTicket.getTitle(),
+            oldStatus.toString(),
+            newStatus.toString(),
+            oldPriority.toString(),
+            newPriority.toString(),
+            savedTicket.getAssignedTo().getName(),
+            "http://supportsystem.com/ticket/" + savedTicket.getId()
+    );
+    emailService.sendEmail(loggedInUser.getEmail(), subject, emailBody, true);
 }
 
 
