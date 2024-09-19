@@ -114,15 +114,15 @@ public class Ticket {
 	}
 
 
-	public void setAssignedTo(SupportAgent assignedTo) {
-		this.assignedTo = assignedTo;
-	}
-
 	public SupportAgent getAssignedTo() {
 		return assignedTo;
 	}
 
-	public void setTeam(Team team) {
+	public void setAssignedTo(SupportAgent assignedTo) {
+		this.assignedTo = assignedTo;
+	}
+
+		public void setTeam(Team team) {
 		this.team = team;
 	}
 

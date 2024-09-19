@@ -118,7 +118,9 @@ public Ticket createTicket(@PathVariable Long userId, @PathVariable Long categor
         try {
             Ticket ticket = ticketService.updateTicketStatus(ticketId, status,priority);
             return ResponseEntity.ok(ticket);
+
         } catch (Exception e) {
+            e.getStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to update status");
         }
     }

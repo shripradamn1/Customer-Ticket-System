@@ -4,6 +4,7 @@ import com.spring_boot.CSTS.Repository.CategoryRepository;
 import com.spring_boot.CSTS.model.Category;
 import com.spring_boot.CSTS.model.Team;
 import com.spring_boot.CSTS.Repository.TeamRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +28,10 @@ public class TeamService {
     }
 
     public Team createTeam(Team team, Long categoryId) {
+        if(teamRepository.count()==0)
+        {
+            teamRepository.resetAutoIncrement();
+        }
         // Fetch the category by ID
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid category ID"));
@@ -53,4 +58,7 @@ public class TeamService {
     public void deleteTeam(Long id) {
         teamRepository.deleteById(id);
     }
+
+
+
 }

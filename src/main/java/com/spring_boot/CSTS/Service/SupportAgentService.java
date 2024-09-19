@@ -25,6 +25,8 @@ public class SupportAgentService {
     private TeamRepository teamRepository;
 
     public SupportAgent createAgent(Long categoryId,Long teamId, SupportAgent agent) {
+        if(agentRepository.count()==0)
+            agentRepository.resetAutoIncrement();
         Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new RuntimeException("category not found"));
         Team team = teamRepository.findById(teamId)
                 .orElseThrow(() -> new RuntimeException("Team not found"));
@@ -54,11 +56,11 @@ public class SupportAgentService {
         Ticket updateTicket =ticketRepository.save(ticket);
         return updateTicket;
     }
-    public List<SupportAgentDTO> getAgentss() {
-        List<SupportAgent> agents = agentRepository.findAll();
-        return agents.stream()
-                .map(agent -> new SupportAgentDTO(agent.getId(), agent.getName(), agent.getUsername(), agent.getTeam(), agent.getCategory()))
-                .collect(Collectors.toList());
-    }
+//    public List<SupportAgentDTO> getAgentss() {
+//        List<SupportAgent> agents = agentRepository.findAll();
+//        return agents.stream()
+//                .map(agent -> new SupportAgentDTO(agent.getId(), agent.getName(), agent.getUsername(), agent.getTeam(), agent.getCategory()))
+//                .collect(Collectors.toList());
+//    }
 
 }
