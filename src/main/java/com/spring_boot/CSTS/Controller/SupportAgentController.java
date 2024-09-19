@@ -2,6 +2,7 @@ package com.spring_boot.CSTS.Controller;
 
 import com.spring_boot.CSTS.Service.SupportAgentService;
 import com.spring_boot.CSTS.model.SupportAgent;
+import com.spring_boot.CSTS.model.SupportAgentDTO;
 import com.spring_boot.CSTS.model.Ticket;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +21,7 @@ public class SupportAgentController {
     public SupportAgent createAgent(@PathVariable Long categoryId,@PathVariable Long teamId, @RequestBody SupportAgent agent) {
         return agentService.createAgent(categoryId,teamId, agent);
     }
-    @GetMapping
+    @GetMapping("/agents")
     public List<SupportAgent> getagents(){
         return agentService.getAgents();
     }
@@ -34,5 +35,10 @@ public class SupportAgentController {
       Ticket ticket=  agentService.updateTicketStatus(aid,tid, Ticket.Status.valueOf(status));
       return Optional.ofNullable(ticket);
 
+    }
+    @GetMapping
+    public List<SupportAgentDTO> getAgentss() {
+        System.out.println(agentService.getAgentss());
+        return agentService.getAgentss();
     }
 }

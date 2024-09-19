@@ -38,7 +38,7 @@ public class TicketService {
 
         if (file != null && !file.isEmpty()) {
             String filePath = saveFile(file);  // Save file
-            ticket.setAttachment("C:\\Users\\e031760\\Desktop\\CaseStudy\\attachments");    // Add file path to the ticket
+            ticket.setAttachment("C:\\Users\\e031906\\Downloads\\demo");    // Add file path to the ticket
         }
 
         // Validate category ID

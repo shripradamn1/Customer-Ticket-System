@@ -1,5 +1,7 @@
 package com.spring_boot.CSTS.Service;
 
+import com.spring_boot.CSTS.Repository.CategoryRepository;
+import com.spring_boot.CSTS.model.Category;
 import com.spring_boot.CSTS.model.Team;
 import com.spring_boot.CSTS.Repository.TeamRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,8 @@ public class TeamService {
 
     @Autowired
     private TeamRepository teamRepository;
+    @Autowired
+    CategoryRepository categoryRepository;
 
     public List<Team> getAllTeams() {
         return teamRepository.findAll();
@@ -22,10 +26,17 @@ public class TeamService {
         return teamRepository.findById(id);
     }
 
-    public Team createTeam(Team team) {
+    public Team createTeam(Team team, Long categoryId) {
+        // Fetch the category by ID
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid category ID"));
+
+        // Set the category for the team
+        team.setCategory(category);
+
+        // Save the team
         return teamRepository.save(team);
     }
-
     public Team updateTeam(Long id, Team teamDetails) {
         return teamRepository.findById(id)
                 .map(team -> {
