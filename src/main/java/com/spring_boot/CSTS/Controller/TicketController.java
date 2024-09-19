@@ -63,11 +63,11 @@ public Ticket createTicket(@PathVariable Long userId, @PathVariable Long categor
 
 
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Ticket> updateTicket(@PathVariable Long id, @RequestBody Ticket ticket) {
-        ticket.setDescription(ticket.getDescription());
-        return ResponseEntity.ok(ticketService.updateTicket(ticket));
-    }
+    // @PutMapping("/{id}")
+    // public ResponseEntity<Ticket> updateTicket(@PathVariable Long id, @RequestBody Ticket ticket) {
+    //     ticket.setDescription(ticket.getDescription());
+    //     return ResponseEntity.ok(ticketService.updateTicket(ticket));
+    // }
 
 
     @DeleteMapping("/delete/{ticketId}")
