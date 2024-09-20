@@ -4,56 +4,56 @@ public class SupportAgentDTO {
     private Long id;
     private String name;
     private String username;
-    private Team team;
-    private Category category;
+    private Long teamId;
+    private String teamName; // Add team name instead of embedding full Team object
+    private Long categoryId;
+    private String categoryName; // Similarly for category
 
     // Constructors, getters, and setters
-    public SupportAgentDTO(Long id, String name, String username, Team team, Category category) {
+    public SupportAgentDTO(Long id, String name, String username, Long teamId, String teamName, Long categoryId, String categoryName) {
         this.id = id;
         this.name = name;
         this.username = username;
-        this.team = team;
-        this.category = category;
+        this.teamId = teamId;
+        this.teamName = teamName;
+        this.categoryId = categoryId;
+        this.categoryName = categoryName;
     }
 
-    // Getters and setters
-    public Long getId() {
-        return id;
+    // Getters and setters for new fields
+    public Long getTeamId() {
+        return teamId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setTeamId(Long teamId) {
+        this.teamId = teamId;
     }
 
-    public String getName() {
-        return name;
+    public String getTeamName() {
+        return teamName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setTeamName(String teamName) {
+        this.teamName = teamName;
     }
 
-    public String getUsername() {
-        return username;
+    public Long getCategoryId() {
+        return categoryId;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setCategoryId(Long categoryId) {
+        this.categoryId = categoryId;
     }
 
-    public Team getTeam() {
-        return team;
+    public String getCategoryName() {
+        return categoryName;
     }
 
-    public void setTeam(Team team) {
-        this.team = team;
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
     }
 
-    public Category getCategory() {
-        return category;
-    }
-
-    public void setCategory(Category category) {
-        this.category = category;
-    }
+    // other getters and setters
 }
+
+

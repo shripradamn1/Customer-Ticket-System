@@ -40,10 +40,70 @@ public class TicketService {
     private AttachmentService attachmentService;
 
     @Transactional
+<<<<<<< HEAD
 public Ticket createTicket(Long userId, Long categoryId, Long teamId, Ticket ticket, MultipartFile file) throws IOException {
     // Validate category ID
     if (categoryId == null) {
         throw new IllegalArgumentException("categoryId must be provided");
+=======
+    public Ticket createTicket(Long userId, Long categoryId, Long teamId, Ticket ticket, MultipartFile file) throws IOException {
+
+        if (file != null && !file.isEmpty()) {
+            String filePath = saveFile(file);  // Save file and get path
+            ticket.setAttachment("C:\\Users\\e031906\\Desktop\\attachments");    // Add file path to the ticket
+        } else {
+            ticket.setAttachment(null); // Ensure attachment is null if no file is provided
+        }
+
+        // Validate category ID
+        if (categoryId == null) {
+            throw new IllegalArgumentException("categoryId must be provided");
+        }
+
+        // Fetch the logged-in user's username
+        String loggedInUsername = SecurityContextHolder.getContext().getAuthentication().getName();
+        User loggedInUser = userRepository.findByUsername(loggedInUsername)
+                .orElseThrow(() -> new RuntimeException("Logged-in user not found"));
+
+        // Fetch category, team, and agents
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new RuntimeException("Category not found"));
+
+        Team team = teamRepository.findById(teamId)
+                .orElseThrow(() -> new RuntimeException("Team not found"));
+
+        Set<SupportAgent> agentsSet = team.getAgents();
+        List<SupportAgent> agents = new ArrayList<>(agentsSet);
+
+        if (!agents.isEmpty()) {
+            Random random = new Random();
+            SupportAgent assignedAgent = agents.get(random.nextInt(agents.size()));
+            ticket.setAssignedTo(assignedAgent);
+        } else {
+            throw new RuntimeException("No agents available in the team");
+        }
+
+        // Set ticket attributes
+        ticket.setUserId(userId);
+        ticket.setCategory(category);
+        ticket.setTeam(team);
+        ticket.setStatus(Ticket.Status.OPEN);
+
+        // Save the ticket
+        Ticket savedTicket = ticketRepository.save(ticket);
+
+        // Send dynamic HTML email notification
+        String emailBody = emailService.buildTicketCreationEmail(
+                loggedInUser.getUsername(), savedTicket.getTitle(), savedTicket.getId(),
+                savedTicket.getDescription(), "http://supportsystem.com/ticket/" + savedTicket.getId(),
+                savedTicket.getAssignedTo().getName()
+        );
+
+        String subject = "New Ticket Created: " + savedTicket.getTitle();
+        emailService.sendEmail(loggedInUser.getEmail(), subject, emailBody, true);
+
+        return savedTicket;
+>>>>>>> 8d6625c02cefe156c98e61703e282fbbaf8c0b59
     }
 
     // Fetch the logged-in user's username
@@ -99,8 +159,13 @@ public Ticket createTicket(Long userId, Long categoryId, Long teamId, Ticket tic
 
     private String saveFile(MultipartFile file) throws IOException {
         String fileName = file.getOriginalFilename();
+<<<<<<< HEAD
         String filePath = "C:/Users/e031760/Desktop/CaseStudy/attachments/" + fileName;
     
+=======
+        String filePath = "C:\\Users\\e031906\\Desktop\\attachments" + fileName; // Change this path as needed
+
+>>>>>>> 8d6625c02cefe156c98e61703e282fbbaf8c0b59
         File dest = new File(filePath);
         
         // Create the directory if it doesn't exist
@@ -147,6 +212,7 @@ public Ticket createTicket(Long userId, Long categoryId, Long teamId, Ticket tic
 
             Ticket savedTicket = ticketRepository.save(ticket);
 
+<<<<<<< HEAD
            String loggedInUsername = SecurityContextHolder.getContext().getAuthentication().getName();
            User loggedInUser = userRepository.findByUsername(loggedInUsername)
                    .orElseThrow(() -> new RuntimeException("Logged-in user not found"));
@@ -165,6 +231,26 @@ public Ticket createTicket(Long userId, Long categoryId, Long teamId, Ticket tic
            } else {
                sendTicketUpdateEmail(loggedInUser, savedTicket, oldStatus, newStatus, oldPriority, newPriority);
            }
+=======
+            String loggedInUsername = SecurityContextHolder.getContext().getAuthentication().getName();
+            User loggedInUser = userRepository.findByUsername(loggedInUsername)
+                    .orElseThrow(() -> new RuntimeException("Logged-in user not found"));
+
+            if (newStatus == Ticket.Status.RESOLVED) {
+                String feedbackLink = "http://localhost:3000/feedback/" + savedTicket.getId(); // React frontend link
+                String subject = "Ticket Resolved: " + savedTicket.getTitle();
+                String emailBody = emailService.buildTicketResolvedEmail(
+                        loggedInUser.getUsername(),
+                        savedTicket.getId(),
+                        savedTicket.getTitle(),
+                        savedTicket.getAssignedTo().getName(),
+                        feedbackLink
+                );
+                emailService.sendEmail(loggedInUser.getEmail(), subject, emailBody, true);
+            } else {
+                sendTicketUpdateEmail(loggedInUser, savedTicket, oldStatus, newStatus, oldPriority, newPriority);
+            }
+>>>>>>> 8d6625c02cefe156c98e61703e282fbbaf8c0b59
 
             return savedTicket;
         } else {
