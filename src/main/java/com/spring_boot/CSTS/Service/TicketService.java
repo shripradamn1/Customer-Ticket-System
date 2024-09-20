@@ -39,7 +39,7 @@ public class TicketService {
 
         if (file != null && !file.isEmpty()) {
             String filePath = saveFile(file);  // Save file and get path
-            ticket.setAttachment(filePath);    // Add file path to the ticket
+            ticket.setAttachment("C:\\Users\\e031906\\Desktop\\attachments");    // Add file path to the ticket
         } else {
             ticket.setAttachment(null); // Ensure attachment is null if no file is provided
         }
@@ -96,7 +96,7 @@ public class TicketService {
 
     private String saveFile(MultipartFile file) throws IOException {
         String fileName = file.getOriginalFilename();
-        String filePath = "C:/path/to/your/upload/dir/" + fileName; // Change this path as needed
+        String filePath = "C:\\Users\\e031906\\Desktop\\attachments" + fileName; // Change this path as needed
 
         File dest = new File(filePath);
 
@@ -143,24 +143,24 @@ public class TicketService {
 
             Ticket savedTicket = ticketRepository.save(ticket);
 
-//            String loggedInUsername = SecurityContextHolder.getContext().getAuthentication().getName();
-//            User loggedInUser = userRepository.findByUsername(loggedInUsername)
-//                    .orElseThrow(() -> new RuntimeException("Logged-in user not found"));
-//
-//            if (newStatus == Ticket.Status.RESOLVED) {
-//                String feedbackLink = "http://localhost:3000/feedback/" + savedTicket.getId(); // React frontend link
-//                String subject = "Ticket Resolved: " + savedTicket.getTitle();
-//                String emailBody = emailService.buildTicketResolvedEmail(
-//                        loggedInUser.getUsername(),
-//                        savedTicket.getId(),
-//                        savedTicket.getTitle(),
-//                        savedTicket.getAssignedTo().getName(),
-//                        feedbackLink
-//                );
-//                emailService.sendEmail(loggedInUser.getEmail(), subject, emailBody, true);
-//            } else {
-//                sendTicketUpdateEmail(loggedInUser, savedTicket, oldStatus, newStatus, oldPriority, newPriority);
-//            }
+            String loggedInUsername = SecurityContextHolder.getContext().getAuthentication().getName();
+            User loggedInUser = userRepository.findByUsername(loggedInUsername)
+                    .orElseThrow(() -> new RuntimeException("Logged-in user not found"));
+
+            if (newStatus == Ticket.Status.RESOLVED) {
+                String feedbackLink = "http://localhost:3000/feedback/" + savedTicket.getId(); // React frontend link
+                String subject = "Ticket Resolved: " + savedTicket.getTitle();
+                String emailBody = emailService.buildTicketResolvedEmail(
+                        loggedInUser.getUsername(),
+                        savedTicket.getId(),
+                        savedTicket.getTitle(),
+                        savedTicket.getAssignedTo().getName(),
+                        feedbackLink
+                );
+                emailService.sendEmail(loggedInUser.getEmail(), subject, emailBody, true);
+            } else {
+                sendTicketUpdateEmail(loggedInUser, savedTicket, oldStatus, newStatus, oldPriority, newPriority);
+            }
 
             return savedTicket;
         } else {

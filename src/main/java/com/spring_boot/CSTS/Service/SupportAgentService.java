@@ -60,7 +60,15 @@ public class SupportAgentService {
     public List<SupportAgentDTO> getAgentss() {
         List<SupportAgent> agents = agentRepository.findAll();
         return agents.stream()
-                .map(agent -> new SupportAgentDTO(agent.getId(), agent.getName(), agent.getUsername(), agent.getTeam(), agent.getCategory()))
+                .map(agent -> new SupportAgentDTO(
+                        agent.getId(),
+                        agent.getName(),
+                        agent.getUsername(),
+                        agent.getTeam().getId(),   // Map team ID
+                        agent.getTeam().getName(), // Map team name
+                        agent.getCategory().getId(), // Map category ID
+                        agent.getCategory().getName() // Map category name
+                ))
                 .collect(Collectors.toList());
     }
 
