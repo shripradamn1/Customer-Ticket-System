@@ -1,5 +1,6 @@
 package com.spring_boot.CSTS.Service;
 
+import com.spring_boot.CSTS.Exception.TeamNotFoundException;
 import com.spring_boot.CSTS.Repository.CategoryRepository;
 import com.spring_boot.CSTS.model.Category;
 import com.spring_boot.CSTS.model.Team;
@@ -56,6 +57,9 @@ public class TeamService {
     }
 
     public void deleteTeam(Long id) {
+        if (!teamRepository.existsById(id)) {
+            throw new TeamNotFoundException("Team with id " + id + " not found");
+        }
         teamRepository.deleteById(id);
     }
 

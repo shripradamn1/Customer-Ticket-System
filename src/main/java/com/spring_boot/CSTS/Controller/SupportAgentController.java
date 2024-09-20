@@ -3,6 +3,7 @@ package com.spring_boot.CSTS.Controller;
 import com.spring_boot.CSTS.Service.SupportAgentService;
 import com.spring_boot.CSTS.model.SupportAgent;
 //import com.spring_boot.CSTS.model.SupportAgentDTO;
+import com.spring_boot.CSTS.model.SupportAgentDTO;
 import com.spring_boot.CSTS.model.Ticket;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -36,9 +37,9 @@ public class SupportAgentController {
       return Optional.ofNullable(ticket);
 
     }
-//    @GetMapping
-//    public List<SupportAgentDTO> getAgentss() {
-//        System.out.println(agentService.getAgentss());
-//        return agentService.getAgentss();
-//    }
+    @GetMapping
+    public List<SupportAgentDTO> getAgentss() {
+        System.out.println(agentService.getAgentss());
+        return agentService.getAgentss();
+    }
 }

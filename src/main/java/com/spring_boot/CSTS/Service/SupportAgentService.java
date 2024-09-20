@@ -45,6 +45,7 @@ public class SupportAgentService {
         return agentRepository.findByUsername(agentusername);
     }
     public Ticket updateTicketStatus(Long ticketId, Long agentId, Ticket.Status newStatus){
+
         Ticket ticket = ticketRepository.findById(ticketId)
                 .orElseThrow(() -> new RuntimeException("Ticket not found"));
 
@@ -56,11 +57,11 @@ public class SupportAgentService {
         Ticket updateTicket =ticketRepository.save(ticket);
         return updateTicket;
     }
-//    public List<SupportAgentDTO> getAgentss() {
-//        List<SupportAgent> agents = agentRepository.findAll();
-//        return agents.stream()
-//                .map(agent -> new SupportAgentDTO(agent.getId(), agent.getName(), agent.getUsername(), agent.getTeam(), agent.getCategory()))
-//                .collect(Collectors.toList());
-//    }
+    public List<SupportAgentDTO> getAgentss() {
+        List<SupportAgent> agents = agentRepository.findAll();
+        return agents.stream()
+                .map(agent -> new SupportAgentDTO(agent.getId(), agent.getName(), agent.getUsername(), agent.getTeam(), agent.getCategory()))
+                .collect(Collectors.toList());
+    }
 
 }

@@ -1,5 +1,6 @@
 package com.spring_boot.CSTS.Service;
 
+import com.spring_boot.CSTS.Exception.TicketNotFoundException;
 import com.spring_boot.CSTS.Repository.*;
 import com.spring_boot.CSTS.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -185,6 +186,11 @@ public class TicketService {
 
     @Transactional
     public void deleteTicket(Long id) {
-        ticketRepository.deleteById(id);
+        Ticket ticket = ticketRepository.findById(id)
+                .orElseThrow(() -> new TicketNotFoundException("Ticket with id " + id + " not found"));
+        ticketRepository.delete(ticket);
     }
+
+
+
 }

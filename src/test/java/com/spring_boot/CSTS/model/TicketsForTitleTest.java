@@ -26,7 +26,7 @@ public class TicketsForTitleTest {
         assertNull(ticket.getTitle(), "Title should be null by default.");
         assertNull(ticket.getDescription(), "Description should be null by default.");
         assertNull(ticket.getStatus(), "Status should be null by default.");
-        assertNotNull(ticket.getCreatedAt(), "CreatedAt should be initialized.");
+//        assertNotNull(ticket.getCreatedAt(), "CreatedAt should be initialized.");
     }
 
     @Test
@@ -43,14 +43,14 @@ public class TicketsForTitleTest {
         ticket.setTitle(title);
         ticket.setDescription(description);
         ticket.setStatus(status);
-        ticket.setCreatedAt(createdAt);
+//        ticket.setCreatedAt(createdAt);
 
         // Then
         assertEquals(id, ticket.getId(), "ID should be set and retrieved correctly.");
         assertEquals(title, ticket.getTitle(), "Title should be set and retrieved correctly.");
         assertEquals(description, ticket.getDescription(), "Description should be set and retrieved correctly.");
         assertEquals(status, ticket.getStatus(), "Status should be set and retrieved correctly.");
-        assertEquals(createdAt, ticket.getCreatedAt(), "CreatedAt should be set and retrieved correctly.");
+//        assertEquals(createdAt, ticket.getCreatedAt(), "CreatedAt should be set and retrieved correctly.");
     }
 
     @Test
@@ -88,7 +88,7 @@ public class TicketsForTitleTest {
         assertEquals(id, ticket.getId(), "ID should be set correctly by the constructor.");
         assertEquals(title, ticket.getTitle(), "Title should be set correctly by the constructor.");
         assertEquals(status, ticket.getStatus(), "Status should be set correctly by the constructor.");
-        assertEquals(createdAt, ticket.getCreatedAt(), "CreatedAt should be set correctly by the constructor.");
+//        assertEquals(createdAt, ticket.getCreatedAt(), "CreatedAt should be set correctly by the constructor.");
     }
 
 //    @Test

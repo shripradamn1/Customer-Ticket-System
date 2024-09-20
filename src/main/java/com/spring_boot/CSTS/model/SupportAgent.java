@@ -19,7 +19,7 @@ public class SupportAgent {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="team_id")
     Team team;
-    @ManyToOne(fetch = FetchType.LAZY) // Consider using LAZY here too
+    @ManyToOne(fetch = FetchType.EAGER) // Consider using LAZY here too
     @JoinColumn(name="category_id")
     private Category category;
 
