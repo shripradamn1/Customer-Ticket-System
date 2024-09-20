@@ -5,7 +5,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 
 @Entity
@@ -16,25 +15,13 @@ public class Attachment {
     private Long id;
 
     private String fileName;
-    private String fileType;
-
-    @Lob
-    private byte[] data;  // Store file data as a byte array
+    private String filePath;
 
     @ManyToOne
     @JoinColumn(name = "ticket_id")
-    private Ticket ticket;  // Associate each attachment with a ticket
+    private Ticket ticket;
 
-    // Constructors, getters, and setters
-    public Attachment() {}
-
-    public Attachment(String fileName, String fileType, byte[] data, Ticket ticket) {
-        this.fileName = fileName;
-        this.fileType = fileType;
-        this.data = data;
-        this.ticket = ticket;
-    }
-
+    // Getters and setters
     public Long getId() {
         return id;
     }
@@ -51,20 +38,12 @@ public class Attachment {
         this.fileName = fileName;
     }
 
-    public String getFileType() {
-        return fileType;
+    public String getFilePath() {
+        return filePath;
     }
 
-    public void setFileType(String fileType) {
-        this.fileType = fileType;
-    }
-
-    public byte[] getData() {
-        return data;
-    }
-
-    public void setData(byte[] data) {
-        this.data = data;
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
     }
 
     public Ticket getTicket() {

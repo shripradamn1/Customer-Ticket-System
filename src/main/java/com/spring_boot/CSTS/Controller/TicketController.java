@@ -11,7 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
-
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,9 +30,8 @@ public class   TicketController {
     private SupportAgentService agentService;
 
     @PostMapping("{userId}/{categoryId}/{teamId}")
-public Ticket createTicket(@PathVariable Long userId, @PathVariable Long categoryId, @PathVariable Long teamId,
+    public Ticket createTicket(@PathVariable Long userId, @PathVariable Long categoryId, @PathVariable Long teamId,
                             @ModelAttribute Ticket ticketData,@RequestParam("file") MultipartFile file) {
-
     try {
         return ticketService.createTicket(userId, categoryId, teamId, ticketData, file);
     } catch (IOException e) {
