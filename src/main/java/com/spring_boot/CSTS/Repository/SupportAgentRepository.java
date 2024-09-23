@@ -12,6 +12,10 @@ import java.util.Optional;
 
 //@Repository
 public interface SupportAgentRepository extends JpaRepository<SupportAgent, Long> {
+    @Modifying
+    @Transactional
+    @Query(value = "ALTER TABLE support_agents AUTO_INCREMENT = 1", nativeQuery = true)
+    void resetAutoIncrement();
     Optional<SupportAgent> findByUsername(String username);
 //    @Transactional
 //    @Modifying

@@ -2,17 +2,15 @@ package com.spring_boot.CSTS.Service;
 
 import com.spring_boot.CSTS.Repository.CategoryRepository;
 import com.spring_boot.CSTS.Repository.TicketRepository;
-import com.spring_boot.CSTS.model.Category;
-import com.spring_boot.CSTS.model.SupportAgent;
-import com.spring_boot.CSTS.model.Team;
+import com.spring_boot.CSTS.model.*;
 import com.spring_boot.CSTS.Repository.SupportAgentRepository;
 import com.spring_boot.CSTS.Repository.TeamRepository;
-import com.spring_boot.CSTS.model.Ticket;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class SupportAgentService {
@@ -27,6 +25,8 @@ public class SupportAgentService {
     private TeamRepository teamRepository;
 
     public SupportAgent createAgent(Long categoryId,Long teamId, SupportAgent agent) {
+        if(agentRepository.count()==0)
+            agentRepository.resetAutoIncrement();
         Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new RuntimeException("category not found"));
         Team team = teamRepository.findById(teamId)
                 .orElseThrow(() -> new RuntimeException("Team not found"));
@@ -45,6 +45,7 @@ public class SupportAgentService {
         return agentRepository.findByUsername(agentusername);
     }
     public Ticket updateTicketStatus(Long ticketId, Long agentId, Ticket.Status newStatus){
+
         Ticket ticket = ticketRepository.findById(ticketId)
                 .orElseThrow(() -> new RuntimeException("Ticket not found"));
 
@@ -53,7 +54,22 @@ public class SupportAgentService {
             throw new RuntimeException("Unauthorized: This ticket is not assigned to the agent");
         }
         ticket.setStatus(newStatus);
-      Ticket updateTicket =ticketRepository.save(ticket);
-      return updateTicket;
+        Ticket updateTicket =ticketRepository.save(ticket);
+        return updateTicket;
     }
+    public List<SupportAgentDTO> getAgentss() {
+        List<SupportAgent> agents = agentRepository.findAll();
+        return agents.stream()
+                .map(agent -> new SupportAgentDTO(
+                        agent.getId(),
+                        agent.getName(),
+                        agent.getUsername(),
+                        agent.getTeam().getId(),   // Map team ID
+                        agent.getTeam().getName(), // Map team name
+                        agent.getCategory().getId(), // Map category ID
+                        agent.getCategory().getName() // Map category name
+                ))
+                .collect(Collectors.toList());
+    }
+
 }

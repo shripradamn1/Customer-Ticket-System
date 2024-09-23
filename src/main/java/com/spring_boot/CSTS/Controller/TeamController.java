@@ -35,8 +35,9 @@ public class TeamController {
     }
 
     @PostMapping
-    public Team createTeam(@RequestBody Team team) {
-        return teamService.createTeam(team);
+    public ResponseEntity<Team> createTeam(@RequestBody Team team, @RequestParam Long categoryId) {
+        Team createdTeam = teamService.createTeam(team, categoryId);
+        return ResponseEntity.ok(createdTeam);
     }
 
     @DeleteMapping("/{id}")

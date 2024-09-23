@@ -9,7 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -26,9 +29,16 @@ public class   TicketController {
     private SupportAgentService agentService;
 
     @PostMapping("{userId}/{categoryId}/{teamId}")
-    public Ticket createTicket(@PathVariable Long userId, @PathVariable Long categoryId, @PathVariable Long teamId, @RequestBody Ticket ticketData) {
-        return ticketService.createTicket(userId, categoryId, teamId, ticketData);
+public Ticket createTicket(@PathVariable Long userId, @PathVariable Long categoryId, @PathVariable Long teamId,
+                            @ModelAttribute Ticket ticketData,@RequestParam("file") MultipartFile file) {
+
+    try {
+        return ticketService.createTicket(userId, categoryId, teamId, ticketData, file);
+    } catch (IOException e) {
+        throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "File upload failed");
     }
+}
+
 
     @GetMapping
     public ResponseEntity<List<TicketsForDelete>> getAllTickets() {
@@ -53,11 +63,11 @@ public class   TicketController {
 
 
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Ticket> updateTicket(@PathVariable Long id, @RequestBody Ticket ticket) {
-        ticket.setDescription(ticket.getDescription());
-        return ResponseEntity.ok(ticketService.updateTicket(ticket));
-    }
+    // @PutMapping("/{id}")
+    // public ResponseEntity<Ticket> updateTicket(@PathVariable Long id, @RequestBody Ticket ticket) {
+    //     ticket.setDescription(ticket.getDescription());
+    //     return ResponseEntity.ok(ticketService.updateTicket(ticket));
+    // }
 
 
     @DeleteMapping("/delete/{ticketId}")
@@ -108,7 +118,9 @@ public class   TicketController {
         try {
             Ticket ticket = ticketService.updateTicketStatus(ticketId, status,priority);
             return ResponseEntity.ok(ticket);
+
         } catch (Exception e) {
+            e.getStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to update status");
         }
     }
