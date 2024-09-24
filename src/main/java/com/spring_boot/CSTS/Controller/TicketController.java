@@ -121,9 +121,48 @@ public Ticket createTicket(@PathVariable Long userId, @PathVariable Long categor
 
         } catch (Exception e) {
             e.getStackTrace();
+            System.out.println( e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to update status");
         }
     }
+
+
+//    @PutMapping("/{ticketId}/status/{status}/priority/{priority}")
+//    public ResponseEntity<?> updateTicketStatus(
+//            @PathVariable Long ticketId,
+//            @PathVariable String status,
+//            @PathVariable(required = false) String priority) {
+//        try {
+//            Ticket.Status newStatus;
+//            Ticket.Priority newPriority = null;
+//
+//            // Convert status string to Ticket.Status enum
+//            try {
+//                newStatus = Ticket.Status.valueOf(status.toUpperCase()); // Convert string to enum (case insensitive)
+//            } catch (IllegalArgumentException e) {
+//                return ResponseEntity.badRequest().body("Invalid status value");
+//            }
+//
+//            // Convert priority string to Ticket.Priority enum if provided
+//            if (priority != null && !priority.equalsIgnoreCase("null")) {
+//                try {
+//                    newPriority = Ticket.Priority.valueOf(priority.toUpperCase());
+//                } catch (IllegalArgumentException e) {
+//                    return ResponseEntity.badRequest().body("Invalid priority value");
+//                }
+//            }
+//
+//            Ticket ticket = ticketService.updateTicketStatus(ticketId, newStatus, newPriority);
+//            return ResponseEntity.ok(ticket);
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to update status");
+//        }
+//    }
+//
+
+
 }
 
 

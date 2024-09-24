@@ -2,10 +2,13 @@ package com.spring_boot.CSTS.Controller;
 
 import com.spring_boot.CSTS.Service.AuthenticationServiceImpl;
 import com.spring_boot.CSTS.model.User;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @CrossOrigin
 // @RequestMapping("/auth")
-public class AuthController {
+public class    AuthController {
 
     //Sign up
     //Login
@@ -51,6 +54,14 @@ public class AuthController {
     public ResponseEntity<User> getUserDetails() {
         return new ResponseEntity<User>(authService.getCurrentUserDetails(), HttpStatus.OK);
     }
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(HttpServletRequest request, HttpServletResponse response) {
+        // Invalidate the session
+        SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
+        logoutHandler.logout(request, response, null);
+        return new ResponseEntity<>("Logout successful", HttpStatus.OK);
+    }
+
 
     @GetMapping("/home")
     public String home() {

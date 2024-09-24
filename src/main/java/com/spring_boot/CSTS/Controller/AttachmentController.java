@@ -1,54 +1,58 @@
 package com.spring_boot.CSTS.Controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.spring_boot.CSTS.Service.AttachmentService;
 import com.spring_boot.CSTS.model.Attachment;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/tickets/{ticketId}/attachments")
+@RequestMapping("/api/tickets")
 public class AttachmentController {
 
     @Autowired
     private AttachmentService attachmentService;
 
-    // Upload an attachment to a ticket
-    @PostMapping("/upload")
-    public ResponseEntity<Attachment> uploadAttachment(@PathVariable Long ticketId, @RequestParam("file") MultipartFile file) {
+    // Fetch all attachments linked to a ticket by its ID
+    @GetMapping("/{ticketId}/attachments")
+    public ResponseEntity<List<Attachment>> getAttachmentsByTicketId(@PathVariable Long ticketId) {
         try {
-            Attachment attachment = attachmentService.addAttachment(ticketId, file);
-            return ResponseEntity.ok(attachment);
+            List<Attachment> attachments = attachmentService.getAttachmentsByTicketId(ticketId);
+            return new ResponseEntity<>(attachments, HttpStatus.OK);
         } catch (Exception e) {
-            return ResponseEntity.status(500).body(null);
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    // Get all attachments for a specific ticket
-    @GetMapping
-    public ResponseEntity<List<Attachment>> getAttachments(@PathVariable Long ticketId) {
-        List<Attachment> attachments = attachmentService.getAttachmentsByTicket(ticketId);
-        return ResponseEntity.ok(attachments);
-    }
+    // Download the first attachment linked to a ticket by ticketId
+    @GetMapping("/{ticketId}/attachments/download")
+    public ResponseEntity<byte[]> downloadAttachmentByTicketId(@PathVariable Long ticketId) throws IOException {
+        try {
+            Attachment attachment = attachmentService.getFirstAttachmentByTicketId(ticketId);
+            if (attachment == null) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
 
-    // Download a specific attachment by attachment ID
-    @GetMapping("/{attachmentId}/download")
-    public ResponseEntity<byte[]> downloadAttachment(@PathVariable Long ticketId, @PathVariable Long attachmentId) {
-        Attachment attachment = attachmentService.getAttachment(attachmentId)
-                .orElseThrow(() -> new RuntimeException("Attachment not found"));
+            Path filePath = Paths.get(attachment.getFilePath());
+            byte[] fileData = Files.readAllBytes(filePath);
 
-        // Check if the attachment belongs to the correct ticket
-        if (!attachment.getTicket().getId().equals(ticketId)) {
-            throw new RuntimeException("Attachment does not belong to this ticket");
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+            headers.setContentDispositionFormData("attachment", attachment.getFileName());
+            headers.setContentLength(fileData.length);
+
+            return new ResponseEntity<>(fileData, headers, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
-        // Return the file as a downloadable response
-        return ResponseEntity.ok()
-                .header("Content-Disposition", "attachment; filename=\"" + attachment.getFileName() + "\"")
-                .body(attachment.getData());
     }
 }

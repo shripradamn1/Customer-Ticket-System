@@ -25,6 +25,9 @@ public class CategoryService {
     private TeamService teamService;
 
     public List<Category> getAllCategories() {
+        System.out.println("From category service : " + categoryRepository.findAll());
+        System.out.println("From category service : " + categoryRepository.findAll().get(1).getId() + ", " + categoryRepository.findAll().get(1).getName());
+
         return categoryRepository.findAll();
     }
 

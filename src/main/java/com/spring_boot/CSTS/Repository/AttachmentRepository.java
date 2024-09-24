@@ -1,17 +1,13 @@
 package com.spring_boot.CSTS.Repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.spring_boot.CSTS.model.Attachment;
-
-import java.util.List;
-
+import com.spring_boot.CSTS.model.Ticket;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
 import java.util.List;
 
+@Repository
 public interface AttachmentRepository extends JpaRepository<Attachment, Long> {
-    List<Attachment> findByTicketId(Long ticketId);
+    List<Attachment> findByTicket(Ticket ticket);
 }
-
-

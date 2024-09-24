@@ -3,6 +3,7 @@ package com.spring_boot.CSTS.Controller;
 import com.spring_boot.CSTS.Service.CategoryService;
 import com.spring_boot.CSTS.model.Category;
 
+import com.spring_boot.CSTS.model.CategoryDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,8 +17,10 @@ public class CategoryController {
     private CategoryService categoryService;
 
     @GetMapping
-    public List<Category> getAllCategories() {
-        return categoryService.getAllCategories();
+    public List<CategoryDTO> getAllCategories() {
+        List<Category>categories=categoryService.getAllCategories();
+        List<CategoryDTO> categoryDTOS=categories.stream().map(c->new CategoryDTO(c.getId(),c.getName())).toList();
+        return categoryDTOS;
     }
 
     @GetMapping("/{id}")
