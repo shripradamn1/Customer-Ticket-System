@@ -31,7 +31,7 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults())
                 .csrf(csrf -> csrf.disable()) // Updated way to configure CSRF
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/signup/**", "/login", "/checkLoggedInUser").permitAll()
+                        .requestMatchers("/signup/**", "/login", "/checkLoggedInUser","/api/agents/checkUsername/**").permitAll()
                         .requestMatchers("/api/tickets/**").permitAll()// Updated
                         .requestMatchers("/feedback/**").permitAll()
                         .requestMatchers("/admin/**").hasAuthority("ROLE_ADMIN")

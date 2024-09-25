@@ -14,20 +14,32 @@ services:
 
   spring-app:
     image: csts-backend
-    container_name: csts-app
+    container_name: csts-backend
     depends_on:
       - mysql-db
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/csts?createDatabaseIfNotExist=true&autoReconnect=true&useSSL=false&allowPublicKeyRetrieval=true
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: Shri7777*
-#      REACT_ORIGIN: http://ec2-34-226-143-25.compute-1.amazonaws.com:3000
+      REACT_ORIGIN: http://localhost:3000
     ports:
       - "7000:7000"
     networks:
       - app-network
     restart: on-failure
 
+  react-app:
+    image: csts-front-end
+    container_name: csts-frontend
+    depends_on:
+      - spring-app
+    environment:
+      REACT_APP_BACKEND_URL: http://localhost:7000
+    ports:
+      - "3000:3000"
+    networks:
+      - app-network
+    restart: on-failure
 volumes:
   mysql-data:
     driver: local

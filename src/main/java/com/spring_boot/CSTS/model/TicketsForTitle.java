@@ -9,11 +9,12 @@ public class TicketsForTitle {
     private Ticket.Status status;
       	private LocalDateTime createdAt = LocalDateTime.now();
 
-    public TicketsForTitle(Long id, String title, Ticket.Status status,LocalDateTime createdAt) {
+    public TicketsForTitle(Long id, String title, Ticket.Status status,LocalDateTime createdAt,String des) {
         this.id=id;
         this.title=title;
         this.status=status;
         this.createdAt=createdAt;
+        this.description=des;
     }
     public TicketsForTitle(){
 

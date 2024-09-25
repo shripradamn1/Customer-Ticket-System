@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 public interface AgentRepository extends JpaRepository<SupportAgent, Long> {
+    boolean existsByUsername(String username);
     @Transactional
     @Modifying
     @Query(value = "ALTER TABLE your_table AUTO_INCREMENT = 1", nativeQuery = true)

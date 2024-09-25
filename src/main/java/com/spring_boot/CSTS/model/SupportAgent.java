@@ -4,10 +4,13 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import lombok.ToString;
+
 import java.util.List;
 import java.util.Set;
 
 @Entity
+@ToString
 @Table(name = "support_agents")
 public class SupportAgent {
     @Id
@@ -19,7 +22,7 @@ public class SupportAgent {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="team_id")
     Team team;
-    @ManyToOne(fetch = FetchType.EAGER) // Consider using LAZY here too
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="category_id")
     private Category category;
 

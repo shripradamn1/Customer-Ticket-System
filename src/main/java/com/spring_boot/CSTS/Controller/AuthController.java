@@ -40,6 +40,7 @@ public class    AuthController {
     }
     @PostMapping("/signup/agent")
     public ResponseEntity<String> signupAgent(@RequestBody User agent) throws Exception {
+        System.out.println(agent);
         authService.signupAgent(agent);
         return new ResponseEntity<String>("agent succefully created", HttpStatus.CREATED);
     }

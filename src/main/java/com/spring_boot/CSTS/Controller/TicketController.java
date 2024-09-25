@@ -30,10 +30,10 @@ public class   TicketController {
 
     @PostMapping("{userId}/{categoryId}/{teamId}")
 public Ticket createTicket(@PathVariable Long userId, @PathVariable Long categoryId, @PathVariable Long teamId,
-                            @ModelAttribute Ticket ticketData,@RequestParam("file") MultipartFile file) {
+                            @ModelAttribute Ticket ticketData) {
 
     try {
-        return ticketService.createTicket(userId, categoryId, teamId, ticketData, file);
+        return ticketService.createTicket(userId, categoryId, teamId, ticketData);
     } catch (IOException e) {
         throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "File upload failed");
     }
@@ -57,17 +57,17 @@ public Ticket createTicket(@PathVariable Long userId, @PathVariable Long categor
     public List<TicketsForTitle> getTicketsByUserId(@PathVariable Long userId) {
         List<Ticket> tickets = ticketRepository.findByUserId(userId);
         return tickets.stream()
-                .map(ticket -> new TicketsForTitle(ticket.getId(), ticket.getTitle(), ticket.getStatus(),ticket.getCreatedAt()))
+                .map(ticket -> new TicketsForTitle(ticket.getId(), ticket.getTitle(), ticket.getStatus(),ticket.getCreatedAt(),ticket.getDescription()))
                 .collect(Collectors.toList());
     }
 
 
 
-    // @PutMapping("/{id}")
-    // public ResponseEntity<Ticket> updateTicket(@PathVariable Long id, @RequestBody Ticket ticket) {
-    //     ticket.setDescription(ticket.getDescription());
-    //     return ResponseEntity.ok(ticketService.updateTicket(ticket));
-    // }
+     @PutMapping("/{id}")
+     public ResponseEntity<Ticket> updateTicket(@PathVariable Long id, @RequestBody String description) {
+
+         return ResponseEntity.ok(ticketService.updateTicket(id,description));
+     }
 
 
     @DeleteMapping("/delete/{ticketId}")

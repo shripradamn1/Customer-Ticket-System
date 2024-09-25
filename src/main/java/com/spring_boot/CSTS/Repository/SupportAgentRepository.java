@@ -17,6 +17,8 @@ public interface SupportAgentRepository extends JpaRepository<SupportAgent, Long
     @Query(value = "ALTER TABLE support_agents AUTO_INCREMENT = 1", nativeQuery = true)
     void resetAutoIncrement();
     Optional<SupportAgent> findByUsername(String username);
+
+    boolean existsByUsername(String username);
 //    @Transactional
 //    @Modifying
 //    @Query(value = "ALTER TABLE your_table AUTO_INCREMENT = 1", nativeQuery = true)

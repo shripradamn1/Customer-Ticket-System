@@ -211,9 +211,12 @@ import java.io.File;
 import java.io.IOException;
 
 import java.util.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 public class TicketService {
+    private static final Logger logger = LoggerFactory.getLogger(TicketService.class);
 
     @Autowired
     private TicketRepository ticketRepository;
@@ -237,63 +240,68 @@ public class TicketService {
     private AttachmentService attachmentService;
 
     @Transactional
-    public Ticket createTicket(Long userId, Long categoryId, Long teamId, Ticket ticket, MultipartFile file) throws IOException {
-        // Validate category ID
+    public Ticket createTicket(Long userId, Long categoryId, Long teamId, Ticket ticket) throws IOException {
+        logger.info("Starting ticket creation for userId: {}, categoryId: {}, teamId: {}", userId, categoryId, teamId);
+
         if (categoryId == null) {
+            logger.error("categoryId must be provided");
             throw new IllegalArgumentException("categoryId must be provided");
         }
 
-        // Fetch the logged-in user's username
         String loggedInUsername = SecurityContextHolder.getContext().getAuthentication().getName();
         User loggedInUser = userRepository.findByUsername(loggedInUsername)
                 .orElseThrow(() -> new RuntimeException("Logged-in user not found"));
 
-        // Fetch category, team, and agents
+        logger.info("Logged in user found: {}", loggedInUser.getUsername());
+
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new RuntimeException("Category not found"));
+
+        logger.info("Category found: {}", category.getName());
 
         Team team = teamRepository.findById(teamId)
                 .orElseThrow(() -> new RuntimeException("Team not found"));
 
-        Set<SupportAgent> agentsSet = team.getAgents();
-        List<SupportAgent> agents = new ArrayList<>(agentsSet);
+        logger.info("Team found: {}", team.getName());
 
-        if (!agents.isEmpty()) {
-            Random random = new Random();
-            SupportAgent assignedAgent = agents.get(random.nextInt(agents.size()));
-            ticket.setAssignedTo(assignedAgent);
-        } else {
+        Set<SupportAgent> agentsSet = team.getAgents();
+        if (agentsSet.isEmpty()) {
+            logger.error("No agents available in team: {}", team.getName());
             throw new RuntimeException("No agents available in the team");
         }
 
-        // Set ticket attributes
+        logger.info("Agents found: {}", agentsSet.size());
+
+        Random random = new Random();
+        SupportAgent assignedAgent = agentsSet.stream().skip(random.nextInt(agentsSet.size())).findFirst().get();
+        ticket.setAssignedTo(assignedAgent);
+
+        logger.info("Assigned agent: {}", assignedAgent.getName());
+
         ticket.setUserId(userId);
         ticket.setCategory(category);
         ticket.setTeam(team);
         ticket.setStatus(Ticket.Status.OPEN);
 
-        // First, save the ticket to generate an ID
         Ticket savedTicket = ticketRepository.save(ticket);
+        logger.info("Ticket saved with ID: {}", savedTicket.getId());
 
-        // Now that the ticket is saved and has an ID, save the attachment
-        if (file != null && !file.isEmpty()) {
-            attachmentService.saveAttachment(savedTicket.getId(), file);  // Save file as attachment
-        }
+//        if (file != null && !file.isEmpty()) {
+//            attachmentService.saveAttachment(savedTicket.getId(), file);
+//            logger.info("Attachment saved for ticket ID: {}", savedTicket.getId());
+//        }
 
-        // Send dynamic HTML email notification
         String emailBody = emailService.buildTicketCreationEmail(
                 loggedInUser.getUsername(), savedTicket.getTitle(), savedTicket.getId(),
-                savedTicket.getDescription(), "http://supportsystem.com/ticket/" + savedTicket.getId(),
+                savedTicket.getDescription(), "" + savedTicket.getId(),
                 savedTicket.getAssignedTo().getName()
         );
 
-        String subject = "New Ticket Created: " + savedTicket.getTitle();
-        emailService.sendEmail(loggedInUser.getEmail(), subject, emailBody, true);
+        emailService.sendEmail(loggedInUser.getEmail(), "New Ticket Created: " + savedTicket.getTitle(), emailBody, true);
+        logger.info("Email sent to user: {}", loggedInUser.getEmail());
 
         return savedTicket;
     }
-
-
 
 
 //    private String saveFile(MultipartFile file) throws IOException {
@@ -336,11 +344,11 @@ public class TicketService {
     @Transactional
     public Ticket updateTicketStatus(Long ticketId, Ticket.Status newStatus, Ticket.Priority newPriority) throws Exception {
         Optional<Ticket> ticketOptional = ticketRepository.findById(ticketId);
-        System.out.println(ticketOptional.toString()+"      ticket update");
+        System.out.println(ticketOptional.toString() + "      ticket update");
 
         if (ticketOptional.isPresent()) {
             Ticket ticket = ticketOptional.get();
-            System.out.println(ticket.getTeam()+" ");
+            System.out.println(ticket.getTeam() + " ");
 
             ticket.setStatus(newStatus);
             ticket.setPriority(newPriority);
@@ -351,7 +359,7 @@ public class TicketService {
             User loggedInUser = userRepository.findByUsername(loggedInUsername)
                     .orElseThrow(() -> new RuntimeException("Logged-in user not found"));
             System.out.println(loggedInUsername);
-            if (newStatus.equals( Ticket.Status.RESOLVED)){
+            if (newStatus.equals(Ticket.Status.RESOLVED)) {
                 String feedbackLink = "http://localhost:3000/feedback/" + savedTicket.getId(); // React frontend link
                 String subject = "Ticket Resolved: " + savedTicket.getTitle();
                 String emailBody = emailService.buildTicketResolvedEmail(
@@ -393,6 +401,25 @@ public class TicketService {
         Ticket ticket = ticketRepository.findById(id)
                 .orElseThrow(() -> new TicketNotFoundException("Ticket with id " + id + " not found"));
         ticketRepository.delete(ticket);
+    }
+
+
+    public Ticket updateTicket(Long id, String des) {
+        // Fetch the ticket by ID
+        Optional<Ticket> existingTicketOpt = ticketRepository.findById(id);
+
+        // If the ticket exists, update its fields
+        if (existingTicketOpt.isPresent()) {
+            Ticket existingTicket = existingTicketOpt.get();
+
+            existingTicket.setDescription(des);
+
+
+            // Save the updated ticket
+            return ticketRepository.save(existingTicket);
+        } else {
+            throw new TicketNotFoundException("Ticket with ID " + id + " not found.");
+        }
     }
 }
 

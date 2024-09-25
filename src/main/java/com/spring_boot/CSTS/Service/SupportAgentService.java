@@ -72,4 +72,8 @@ public class SupportAgentService {
                 .collect(Collectors.toList());
     }
 
+    public boolean checkUsernameExists(String username) {
+        return agentRepository.existsByUsername(username); // Calls the repository method
+    }
+
 }
